@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triangle Agency — Manual do Agente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d0f;
+    --bg2: #111518;
+    --bg3: #181e22;
+    --card: #1a2026;
+    --border: #2a3540;
+    --border2: #3a4a55;
+    --accent: #00e5a0;
+    --accent2: #00b87e;
+    --accent3: #005c40;
+    --warn: #f5c842;
+    --warn2: #7a6010;
+    --danger: #e84545;
+    --text: #e8eff5;
+    --text2: #8ba3b5;
+    --text3: #4a6070;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --head: 'Space Grotesk', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(10,13,15,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 2rem;
+    height: 52px;
+    overflow-x: auto;
+  }
+
+  nav .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-right: 2rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  nav a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 12px;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    padding: 0 1rem;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  nav a:hover, nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* LAYOUT */
+  .content {
+    margin-top: 52px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 4rem 0 3rem;
+  }
+  .hero .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    background: rgba(0,229,160,0.08);
+    border: 1px solid rgba(0,229,160,0.3);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: var(--head);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero .sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+  }
+  .hero .desc {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 580px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .hero-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .hero-tile:hover {
+    border-color: var(--accent2);
+    background: #1f2c34;
+  }
+  .hero-tile .icon {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+  }
+  .hero-tile h3 {
+    font-family: var(--head);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .hero-tile p {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* SECTION TITLES */
+  .sec-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sec-header .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .sec-header h2 {
+    font-family: var(--head);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .sec-header p {
+    color: var(--text2);
+    margin-top: 0.5rem;
+    font-size: 15px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card.accent { border-left: 3px solid var(--accent); }
+  .card.warn { border-left: 3px solid var(--warn); }
+  .card.danger { border-left: 3px solid var(--danger); }
+  .card h3 {
+    font-family: var(--head);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .card p { color: var(--text2); font-size: 14px; }
+
+  /* TWO COL */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 0.5rem;
+  }
+  .badge.green { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.3); }
+  .badge.yellow { background: rgba(245,200,66,0.1); color: var(--warn); border: 1px solid rgba(245,200,66,0.3); }
+  .badge.red { background: rgba(232,69,69,0.1); color: var(--danger); border: 1px solid rgba(232,69,69,0.3); }
+  .badge.blue { background: rgba(60,140,230,0.1); color: #60a8ef; border: 1px solid rgba(60,140,230,0.3); }
+  .badge.purple { background: rgba(160,100,240,0.1); color: #c080f0; border: 1px solid rgba(160,100,240,0.3); }
+
+  /* STEPS */
+  .steps { margin: 1.5rem 0; }
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    background: rgba(0,229,160,0.12);
+    border: 1px solid rgba(0,229,160,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .step-body h4 {
+    font-family: var(--head);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .step-body p { font-size: 13px; color: var(--text2); }
+
+  /* DICE DISPLAY */
+  .dice-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    align-items: center;
+  }
+  .die {
+    width: 44px; height: 44px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .die.three {
+    background: rgba(0,229,160,0.15);
+    border-color: var(--accent2);
+    color: var(--accent);
+  }
+  .die.burnt {
+    background: rgba(232,69,69,0.1);
+    border-color: var(--danger);
+    color: var(--danger);
+    text-decoration: line-through;
+  }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--text); }
+
+  /* QUALITIES GRID */
+  .qual-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .qual-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .qual-card h4 {
+    font-family: var(--head);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .qual-card p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* INTERACTIVE DICE */
+  #dice-sim {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+  #dice-sim .dice-display {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+  #dice-sim .die {
+    width: 52px; height: 52px;
+    font-size: 22px;
+    border-radius: 10px;
+    cursor: default;
+  }
+  #roll-btn {
+    background: var(--accent3);
+    border: 1px solid var(--accent2);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #roll-btn:hover { background: #007c55; }
+  #roll-result {
+    font-family: var(--head);
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 1rem;
+    min-height: 24px;
+  }
+  #roll-result.success { color: var(--accent); }
+  #roll-result.fail { color: var(--danger); }
+  #roll-result.tris { color: var(--warn); }
+
+  /* CHAOS METER */
+  .chaos-bar-wrap {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+  }
+  .chaos-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+  .chaos-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .chaos-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  /* ACCORDION */
+  .accord { margin-bottom: 0.5rem; }
+  .accord-head {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s;
+    font-family: var(--head);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .accord-head:hover { border-color: var(--accent2); }
+  .accord-body {
+    display: none;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+  .accord-body ul { padding-left: 1.25rem; }
+  .accord-body li { margin-bottom: 0.4rem; }
+  .accord.open .accord-head { border-radius: 8px 8px 0 0; border-color: var(--accent2); }
+  .accord.open .accord-body { display: block; }
+  .accord-arr { color: var(--text3); font-size: 12px; transition: transform 0.2s; }
+  .accord.open .accord-arr { transform: rotate(180deg); }
+
+  /* INFO BOX */
+  .infobox {
+    display: flex;
+    gap: 1rem;
+    background: rgba(0,229,160,0.05);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    align-items: flex-start;
+  }
+  .infobox .ico { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .infobox p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .infobox p strong { color: var(--accent); }
+
+  .warnbox {
+    display: flex;
+    gap: 1rem;
+    background: rgba(245,200,66,0.05);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    align-items: flex-start;
+  }
+  .warnbox .ico { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .warnbox p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .warnbox p strong { color: var(--warn); }
+
+  /* ARC selector */
+  .arc-section { margin: 2rem 0; }
+  .arc-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .arc-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .pill-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill:hover, .pill.sel {
+    background: rgba(0,229,160,0.12);
+    border-color: var(--accent2);
+    color: var(--accent);
+  }
+
+  .arc-detail {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-height: 120px;
+    transition: opacity 0.2s;
+  }
+  .arc-detail h3 {
+    font-family: var(--head);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .arc-detail .tagline {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .arc-detail p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  /* STANDING */
+  .standing-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .standing-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 13px;
+  }
+  .standing-num {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 20px;
+    color: var(--text3);
+  }
+  .standing-item.bad .standing-num { color: var(--danger); }
+  .standing-item.warn .standing-num { color: var(--warn); }
+  .standing-item.good .standing-num { color: var(--accent); }
+
+  /* MISSION FLOW */
+  .mission-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .mf-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    position: relative;
+  }
+  .mf-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .mf-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  .mf-vert {
+    width: 2px;
+    flex: 1;
+    min-height: 40px;
+    background: var(--border);
+  }
+  .mf-last .mf-vert { display: none; }
+  .mf-body {
+    padding-bottom: 2rem;
+  }
+  .mf-body h4 {
+    font-family: var(--head);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+  }
+  .mf-body p { font-size: 13px; color: var(--text2); }
+
+  /* CONFLICT STEPS */
+  .conflict-step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    align-items: flex-start;
+  }
+  .cs-num {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    min-width: 20px;
+  }
+  .cs-body h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 0.2rem; }
+  .cs-body p { font-size: 12px; color: var(--text2); }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .two-col, .three-col, .qual-grid, .standing-list { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr; }
+    nav a { padding: 0 0.6rem; font-size: 11px; }
+    .hero h1 { font-size: 2rem; }
+  }
+
+  .mono { font-family: var(--mono); }
+  .text-accent { color: var(--accent); }
+  .text-warn { color: var(--warn); }
+  .text-danger { color: var(--danger); }
+  .text-muted { color: var(--text2); }
+  .mt1 { margin-top: 1rem; }
+  .mt2 { margin-top: 2rem; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">▲ TRIANGLE AGENCY</div>
+  <a href="#" class="active" data-sec="home">Início</a>
+  <a href="#" data-sec="fluxo">Fluxo de Jogo</a>
+  <a href="#" data-sec="missao">Missão</a>
+  <a href="#" data-sec="dados">Dados & Rolagem</a>
+  <a href="#" data-sec="habilidades">Habilidades</a>
+  <a href="#" data-sec="conflito">Conflito</a>
+  <a href="#" data-sec="arco">Criar Agente</a>
+  <a href="#" data-sec="referencia">Referência</a>
+</nav>
+
+<div class="content">
+
+<!-- HOME -->
+<div class="section active" id="home">
+  <div class="hero">
+    <div class="tag">MANUAL DO AGENTE DE CAMPO — PRIMEIRA EDIÇÃO</div>
+    <h1>Bem-vindo à <span>Triangle Agency</span></h1>
+    <p class="sub">CLOCK IN. SAVE THE WORLD.</p>
+    <p class="desc">Você foi selecionado como Agente de Campo. Sua missão: conter Anomalias paranormais antes que rasgem o tecido da Realidade. Sim, isso é o seu trabalho agora. Tem benefícios.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card accent">
+      <h3>O que é esse jogo?</h3>
+      <p>Um TTRPG sobre agentes de uma corporação secreta que investigam e capturam fenômenos paranormais chamados de Anomalias. Pense em <em>Men in Black</em> misturado com <em>The Office</em>.</p>
+    </div>
+    <div class="card accent">
+      <h3>O que você vai fazer?</h3>
+      <p>Você interpreta um <strong style="color: var(--text)">Agente de Campo (Resonant)</strong> — uma pessoa comum que se fundiu com uma Anomalia e agora tem poderes sobrenaturais a serviço da agência.</p>
+    </div>
+  </div>
+
+  <div class="card mt1">
+    <h3>🎯 Suas 3 prioridades como Agente</h3>
+    <div class="three-col mt1">
+      <div>
+        <div class="badge green">PRIORIDADE 1</div>
+        <p style="font-size:13px; color: var(--text);font-weight:600">Preservar a Realidade</p>
+        <p style="font-size:12px;color:var(--text2)">Evite que pessoas comuns saibam da existência de Anomalias. Cada testemunha é uma <strong style="color:var(--warn)">Loose End</strong>.</p>
+      </div>
+      <div>
+        <div class="badge yellow">PRIORIDADE 2</div>
+        <p style="font-size:13px; color: var(--text);font-weight:600">Capturar Anomalias</p>
+        <p style="font-size:12px;color:var(--text2)">Leve as Anomalias para o Vault da agência. Neutralizá-las é aceitável mas não ideal.</p>
+      </div>
+      <div>
+        <div class="badge blue">PRIORIDADE 3</div>
+        <p style="font-size:13px; color: var(--text);font-weight:600">Controlar-se</p>
+        <p style="font-size:12px;color:var(--text2)">Use seus poderes Anomalous apenas no trabalho. Uso fora de campo gera Demeritos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-grid mt2" style="cursor:pointer">
+    <div class="hero-tile" onclick="go('fluxo')">
+      <div class="icon">🔄</div>
+      <h3>Como o jogo flui</h3>
+      <p>O loop de jogo, Failure is Assumed e as diferenças do D&D</p>
+    </div>
+    <div class="hero-tile" onclick="go('missao')">
+      <div class="icon">🕵️</div>
+      <h3>Como funciona uma missão</h3>
+      <p>Estrutura de sessão, objetivos e como fichas de missão funcionam</p>
+    </div>
+    <div class="hero-tile" onclick="go('dados')">
+      <div class="icon">🎲</div>
+      <h3>O sistema de dados</h3>
+      <p>6 dados de 4 faces, Chaos, Burnout e Triscendência</p>
+    </div>
+    <div class="hero-tile" onclick="go('habilidades')">
+      <div class="icon">⚡</div>
+      <h3>Suas habilidades</h3>
+      <p>Ask The Agency e seus poderes Anomaly</p>
+    </div>
+    <div class="hero-tile" onclick="go('conflito')">
+      <div class="icon">⚔️</div>
+      <h3>Conflito entre agentes</h3>
+      <p>O que acontece quando agentes brigam</p>
+    </div>
+    <div class="hero-tile" onclick="go('arco')">
+      <div class="icon">🪪</div>
+      <h3>Criar seu Agente</h3>
+      <p>Anomaly, Reality e Competency — as 3 peças do seu ARC</p>
+    </div>
+    <div class="hero-tile" onclick="go('referencia')">
+      <div class="icon">📋</div>
+      <h3>Referência rápida</h3>
+      <p>Commendations, Demerits, Harm, Loose Ends e mais</p>
+    </div>
+  </div>
+
+  <div class="infobox mt2">
+    <div class="ico">ℹ️</div>
+    <p>Textos no livro aparecem em formato <em>&lt;assim/assado&gt;</em> — é proposital. O jogo faz piada de ser um "treinamento corporativo" e não um RPG. Ignore os brackets e leia o primeiro termo.</p>
+  </div>
+
+  <div class="card warn mt1">
+    <h3>⚔️ Vindo do D&D 5e? Leia isso primeiro.</h3>
+    <p style="margin-bottom:0.75rem;font-size:13px;color:var(--text2)">Triangle Agency é bem diferente do que vocês estão acostumados. Aqui está o que vai te surpreender:</p>
+    <div class="two-col">
+      <div>
+        <p style="font-size:12px;color:var(--text2);line-height:1.8">
+          <strong style="color:var(--text)">Sem HP, sem turnos, sem iniciativa.</strong> Combate não existe como estrutura. Tudo é narrado. Harm só mede efeitos letais.<br><br>
+          <strong style="color:var(--text)">Sem skill checks passivos.</strong> Você nunca rola sem querer. O GM descreve o mundo — você decide o que fazer.<br><br>
+          <strong style="color:var(--text)">Sem XP, sem gold, sem itens mágicos.</strong> Commendations são seu progresso. Você compra ferramentas, não encontra tesouro.
+        </p>
+      </div>
+      <div>
+        <p style="font-size:12px;color:var(--text2);line-height:1.8">
+          <strong style="color:var(--text)">Failure is Assumed.</strong> Personagens são pessoas comuns. Sem a Agency ou seus poderes, ações arriscadas simplesmente falham — não existe rolar Athletics pra escalar uma parede.<br><br>
+          <strong style="color:var(--text)">Relationships têm mecânica.</strong> Seus NPCs são interpretados por outros jogadores e perder Connection tem consequências reais.<br><br>
+          <strong style="color:var(--text)">O GM não é adversário.</strong> O conflito mais tenso é entre jogadores — por isso existe o sistema de Conflict Resolution.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLUXO DE JOGO -->
+<div class="section" id="fluxo">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 02 — COMO O JOGO FUNCIONA</div>
+    <h2>Fluxo de jogo</h2>
+    <p>Como uma sessão se parece na prática — especialmente se você vem do D&D.</p>
+  </div>
+
+  <div class="card warn" style="margin-bottom:1.5rem">
+    <h3>A mentalidade central</h3>
+    <p>Em D&D, você tenta coisas e o GM pede rolagens para ver se funcionam. Em Triangle Agency, o GM descreve o mundo e você decide <em>como intervir</em> — com conversa, com Ask The Agency, ou com seus poderes Anomaly. <strong style="color:var(--text)">Rolar é sempre uma escolha sua, nunca uma exigência automática.</strong></p>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">O loop básico de uma cena</h3>
+
+  <div class="mission-flow">
+    <div class="mf-item">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge green">GM DESCREVE</div>
+        <h4>O mundo acontece ao redor de vocês</h4>
+        <p>O GM narra o que vocês veem, ouvem e percebem. Nenhuma rolagem aqui — só informação. Ao contrário do D&D, não existe "role Percepção para notar X". Se é relevante, o GM conta. Se vocês procuram ativamente, o GM conta mais.</p>
+      </div>
+    </div>
+    <div class="mf-item">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge yellow">JOGADORES DECIDEM</div>
+        <h4>O que vocês fazem — e como</h4>
+        <p>Vocês discutem em aberto. Conversam com NPCs, investigam locais, elaboram um plano. A maioria das coisas mundanas e seguras <strong style="color:var(--text)">simplesmente acontece</strong> — sem rolar. Falar com alguém, procurar uma sala, dirigir até algum lugar: sem dados.</p>
+      </div>
+    </div>
+    <div class="mf-item">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge blue">QUANDO ROLAR?</div>
+        <h4>Só quando usar os poderes da Agency</h4>
+        <p>Você rola em <strong style="color:var(--text)">dois casos apenas</strong>: quando usa <strong style="color:var(--accent)">Ask The Agency</strong> (alterar a realidade) ou quando usa uma <strong style="color:var(--accent)">Anomaly Ability</strong> (seus poderes). Qualquer outra coisa? Ou funciona, ou falha — sem intermediário.</p>
+      </div>
+    </div>
+    <div class="mf-item mf-last">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge purple">GM REAGE</div>
+        <h4>O mundo responde às suas escolhas</h4>
+        <p>O GM descreve as consequências — incluindo Loose Ends criadas, Chaos gerado, e como a Anomalia responde. E o ciclo recomeça.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Failure is Assumed — o princípio mais diferente</h3>
+
+  <div class="two-col">
+    <div class="card danger">
+      <h3>🎲 Como era no D&D</h3>
+      <p style="font-size:13px">"Quero escalar o muro." → GM pede Athletics. Você rola, talvez consiga, talvez não.</p>
+      <br>
+      <p style="font-size:13px">"Quero convencer o guarda." → GM pede Persuasão. Você rola.</p>
+      <br>
+      <p style="font-size:13px">Suas skills e atributos definem o que você é capaz de tentar.</p>
+    </div>
+    <div class="card accent">
+      <h3>⚡ Como é no Triangle Agency</h3>
+      <p style="font-size:13px">"Quero escalar o muro." → Se é um muro normal e você é uma pessoa normal: <strong style="color:var(--danger)">não rola, simplesmente tenta e provavelmente não consegue.</strong> Quer garantir? Ask The Agency faz aparecer um andaime que "sempre esteve lá".</p>
+      <br>
+      <p style="font-size:13px">"Quero convencer o guarda." → Roleplay puro. Se o argumento faz sentido narrativo, funciona. Se não faz, não funciona. Quer uma garantia sobrenatural? Ask The Agency.</p>
+    </div>
+  </div>
+
+  <div class="infobox mt1">
+    <div class="ico">💡</div>
+    <p>A regra prática: <strong>se você acha que pode falhar, você vai falhar</strong> — a menos que use Ask The Agency ou um poder. O jogo te empurra a ser criativo com suas ferramentas sobrenaturais, não a rolar dados pra tudo.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Sem combate estruturado</h3>
+
+  <div class="card">
+    <h3>O que isso significa na prática</h3>
+    <p style="margin-bottom:0.75rem">Não existe iniciativa, turnos ou HP. Quando as coisas ficam fisicamente perigosas:</p>
+    <div class="steps mt1">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>O GM descreve a ameaça e quanto Harm ela representa</h4>
+          <p>Ex: "A Anomalia arremessa um carro em você — isso é 2 Harm."</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Você decide como responder — com suas ferramentas</h4>
+          <p>Ask The Agency pra desviar, usar um poder Anomaly, ou gastar QAs da Life Insurance Policy pra absorver o Harm.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Tudo é narrado colaborativamente</h4>
+          <p>Não existe "é o meu turno de atacar". A cena flui como roleplay, e Harm aparece quando o GM avalia que algo letal aconteceu.</p>
+        </div>
+      </div>
+    </div>
+    <div class="warnbox" style="margin-top:1rem;margin-bottom:0">
+      <div class="ico">⚠️</div>
+      <p>Ações puramente físicas e mundanas <strong>não têm mecânica de resolução</strong>. Se você quer socar alguém, tudo bem — mas sem rolar dados. O GM narra o resultado com base no que faz sentido. Quer garantia? Ask The Agency.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Commendations — o "XP" do jogo</h3>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Como você progride</h3>
+      <p style="font-size:13px;color:var(--text2)">Não existe nível, não existe XP. Commendations são a moeda de tudo: comprar <strong style="color:var(--text)">Requisitions</strong> (ferramentas e gadgets da Agency), o <strong style="color:var(--text)">MVP da missão</strong>, e recuperar de morte (que custa -5).</p>
+    </div>
+    <div class="card">
+      <h3>Progressão de verdade</h3>
+      <p style="font-size:13px;color:var(--text2)">Seu agente evolui através de <strong style="color:var(--text)">Playwalled Documents</strong> — seções do livro desbloqueadas por eventos da campanha — e pelo Work/Life Balance visitado após a primeira missão. Não é linear como subir de nível.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Relationships — NPCs interpretados por jogadores</h3>
+
+  <div class="card accent">
+    <h3>A mecânica mais diferente do jogo</h3>
+    <p style="margin-bottom:0.75rem">Em D&D, NPCs são exclusivamente do GM. Aqui, seus 3 Relationships pessoais são <strong style="color:var(--text)">interpretados pelos outros jogadores</strong> (ou GM) quando aparecem em cena.</p>
+    <div class="two-col mt1">
+      <div>
+        <div class="badge green">COMO FUNCIONA</div>
+        <p style="font-size:12px;color:var(--text2)">Você define quem são seus Relationships (via perguntas da sua Reality). Atribui cada um a outro jogador. Quando essa pessoa aparece em cena, o jogador designado a interpreta.</p>
+      </div>
+      <div>
+        <div class="badge yellow">CONNECTION</div>
+        <p style="font-size:12px;color:var(--text2)">Cada Relationship tem um valor de Connection (6 para o mais próximo, 3 para os outros). Ignorar o Reality Trigger da sua ficha faz perder Connection — o que pode fechar portas narrativas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MISSÃO -->
+<div class="section" id="missao">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 02 — OPERAÇÕES DE CAMPO</div>
+    <h2>Como funciona uma missão</h2>
+    <p>Cada sessão tem 3 partes principais. Sempre há uma Anomalia a ser contida.</p>
+  </div>
+
+  <div class="mission-flow">
+    <div class="mf-item">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge green">PARTE 1</div>
+        <h4>Morning Meetings — O dia começa</h4>
+        <p>O GM apresenta cenas do cotidiano dos agentes antes da missão. Momentos pessoais, trabalho no escritório, interação com NPCs. Serve para ambientar e depois o GM te chama para o briefing.</p>
+      </div>
+    </div>
+    <div class="mf-item">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge yellow">PARTE 2</div>
+        <h4>Investigation — Seguindo as pistas</h4>
+        <p>O GM apresenta leads. Você investiga, reduz Loose Ends ao longo do caminho e segue o rastro até o <strong style="color:var(--warn)">Domain</strong> da Anomalia — o lugar onde ela está mais poderosa.</p>
+      </div>
+    </div>
+    <div class="mf-item mf-last">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge red">PARTE 3</div>
+        <h4>Encounter — Dentro do Domain</h4>
+        <p>Vocês enfrentam a Anomalia em seu território. O objetivo é capturá-la na <em>Normal Briefcase</em> (ou neutralizá-la com a <em>Ripple Gun</em> se necessário).</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">O que é uma Anomalia?</h3>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Focus</h3>
+      <p>Um sentimento + assunto que criou a Anomalia. Ela tenta replicar esse sentimento no mundo. Ex: <em>"Amor por esta velha árvore"</em> → faz flores hipnóticas que forçam amor em quem olha.</p>
+    </div>
+    <div class="card">
+      <h3>Domain</h3>
+      <p>O lugar de poder da Anomalia — onde ela entrou na Realidade. Geralmente onde seu Focus é mais intensamente sentido. Entrar no Domain é perigoso mas necessário.</p>
+    </div>
+  </div>
+
+  <div class="card accent mt1">
+    <h3>Como capturar uma Anomalia</h3>
+    <p>Para usar a Normal Briefcase, a Anomalia precisa estar <em>exausta, calma, ou disposta</em>. Os caminhos mais comuns:</p>
+    <div class="steps mt1">
+      <div class="step">
+        <div class="step-num">A</div>
+        <div class="step-body">
+          <h4>Satisfazer temporariamente seu Focus</h4>
+          <p>Leva à satisfação/contentamento</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">B</div>
+        <div class="step-body">
+          <h4>Convencê-la que suas ações são contraproducentes</h4>
+          <p>Leva à confusão</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">C</div>
+        <div class="step-body">
+          <h4>Remover a fonte do seu Focus</h4>
+          <p>Leva ao desespero</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Ameaças em campo</h3>
+
+  <div class="two-col">
+    <div class="card warn">
+      <h3>⚠️ Loose Ends</h3>
+      <p>Pessoas comuns com evidência ou memória do sobrenatural. Cada Loose End aumenta o Chaos disponível nas próximas missões. Você precisa convencer testemunhas que "tudo está perfeitamente normal" — ou removê-las de circulação.</p>
+    </div>
+    <div class="card danger">
+      <h3>🌀 Chaos Pool</h3>
+      <p>Energia Anomalous acumulada. O GM usa Chaos para fazer a Anomalia tomar ações sobrenaturais contra vocês (<em>Chaos Effects</em>). Quanto mais Chaos, mais problemas. Chaos não utilizado desaparece no fim da missão.</p>
+    </div>
+  </div>
+
+  <div class="card mt1">
+    <h3>Equipamentos padrão de toda missão</h3>
+    <div class="two-col mt1">
+      <div>
+        <div class="badge green">NORMAL BRIEFCASE</div>
+        <p style="font-size:13px;color:var(--text2)">Maleta que captura e contém qualquer Anomalia de qualquer tamanho — desde que ela esteja exausta, calma ou disposta.</p>
+      </div>
+      <div>
+        <div class="badge red">RIPPLE GUN</div>
+        <p style="font-size:13px;color:var(--text2)">Única arma que desintegra Anomalias permanentemente. Só pode ser usada na Anomalia-alvo, tem 1 carga. Usá-la em outro alvo = 3 Demeritos.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Resultados possíveis</h3>
+  <div class="three-col">
+    <div class="card">
+      <div class="badge green">CAPTURED</div>
+      <p style="font-size:13px;color:var(--text)">+3 Commendations para cada agente</p>
+    </div>
+    <div class="card">
+      <div class="badge blue">NEUTRALIZED</div>
+      <p style="font-size:13px;color:var(--text)">Nem Commendations nem Demerits</p>
+    </div>
+    <div class="card">
+      <div class="badge red">ESCAPED</div>
+      <p style="font-size:13px;color:var(--text)">-3 Demerits para cada agente</p>
+    </div>
+  </div>
+</div>
+
+<!-- DADOS -->
+<div class="section" id="dados">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 03 — SISTEMA DE RESOLUÇÃO</div>
+    <h2>Dados & Rolagem</h2>
+    <p>Triangle Agency usa apenas dados de 4 faces (d4). Você sempre rola 6 deles.</p>
+  </div>
+
+  <div class="card warn" style="margin-bottom:1.5rem">
+    <h3>Quando você rola dados?</h3>
+    <p style="font-size:13px;margin-bottom:0.75rem">Só em <strong style="color:var(--text)">duas situações</strong>. Nada de rolagens para percepção, atletismo, furtividade ou qualquer skill.</p>
+    <div class="two-col">
+      <div>
+        <div class="badge green">ASK THE AGENCY</div>
+        <p style="font-size:12px;color:var(--text2)">Quando você pede à Agency para alterar a realidade — fazer algo improvável acontecer via Causality Chain.</p>
+      </div>
+      <div>
+        <div class="badge blue">ANOMALY ABILITY</div>
+        <p style="font-size:12px;color:var(--text2)">Quando você usa um dos 3 poderes aprovados da sua Anomalia pessoal.</p>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:0.75rem">E também no Conflict Resolution entre agentes — mas lá é um caso especial sem Chaos nem Triscendência.</p>
+  </div>
+
+  <div id="dice-sim">
+    <p style="font-family:var(--mono);font-size:12px;color:var(--text3);letter-spacing:0.1em;margin-bottom:0.75rem;">SIMULADOR DE ROLAGEM</p>
+    <div class="dice-display" id="dice-display">
+      <div class="die">–</div>
+      <div class="die">–</div>
+      <div class="die">–</div>
+      <div class="die">–</div>
+      <div class="die">–</div>
+      <div class="die">–</div>
+    </div>
+    <button id="roll-btn" onclick="rollDice()">▶ ROLAR 6d4</button>
+    <div id="roll-result"></div>
+  </div>
+
+  <div class="infobox">
+    <div class="ico">🎲</div>
+    <p>Role 6 dados d4. Conte quantos mostraram <strong>3</strong>. Se tiver ao menos um 3 → <strong>sucesso</strong>. Se não tiver nenhum → <strong>falha</strong>. Simples assim.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Chaos — o custo de usar o poder</h3>
+  <p style="color:var(--text2);font-size:14px;margin-bottom:1rem;">Cada dado que <em>não</em> mostrar 3 adiciona 1 Chaos ao Chaos Pool do GM. Uma rolagem padrão pode gerar até 6 de Chaos.</p>
+
+  <div class="card">
+    <table>
+      <thead><tr><th>3s na rolagem</th><th>Resultado</th><th>Chaos gerado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>0</strong></td><td><span style="color:var(--danger)">Falha</span></td><td>6</td></tr>
+        <tr><td><strong>1</strong></td><td><span style="color:var(--accent)">Sucesso</span></td><td>5</td></tr>
+        <tr><td><strong>2</strong></td><td><span style="color:var(--accent)">Sucesso</span></td><td>4</td></tr>
+        <tr><td style="color:var(--warn);font-weight:700"><strong>3 (EXATO)</strong></td><td><span style="color:var(--warn)">✦ TRISCENDÊNCIA</span></td><td>0 sempre</td></tr>
+        <tr><td><strong>4</strong></td><td><span style="color:var(--accent)">Sucesso</span></td><td>2</td></tr>
+        <tr><td><strong>5</strong></td><td><span style="color:var(--accent)">Sucesso</span></td><td>1</td></tr>
+        <tr><td><strong>6</strong></td><td><span style="color:var(--accent)">Sucesso</span></td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Qualities — as 9 abordagens</h3>
+  <p style="color:var(--text2);font-size:14px;margin-bottom:1rem;">Toda ação se encaixa numa das 9 Qualities. O GM determina qual Quality é relevante para cada situação.</p>
+
+  <div class="qual-grid">
+    <div class="qual-card"><h4>Attentiveness</h4><p>Notar detalhes, entender informações complexas, descobrir o que alguém esconde.</p></div>
+    <div class="qual-card"><h4>Duplicity</h4><p>Mentir, persuadir sem estar convencido, apoiar internamente sem mostrar.</p></div>
+    <div class="qual-card"><h4>Dynamism</h4><p>Agressividade, dominância, usar força para conseguir o que quer.</p></div>
+    <div class="qual-card"><h4>Empathy</h4><p>Se relacionar com pessoas, expressar preocupação, encontrar fraquezas emocionais.</p></div>
+    <div class="qual-card"><h4>Initiative</h4><p>Pensar adiante, agir rápido, lidar com problemas antes que piorem.</p></div>
+    <div class="qual-card"><h4>Persistence</h4><p>Não recuar, pressionar, sobrecarregar e irritar alguém até agir.</p></div>
+    <div class="qual-card"><h4>Presence</h4><p>Se destacar, comandar um grupo, inspirar e intimidar.</p></div>
+    <div class="qual-card"><h4>Professionalism</h4><p>Manter a compostura sob pressão, resistir a distrações e efeitos mentais.</p></div>
+    <div class="qual-card"><h4>Subtlety</h4><p>Trabalhar quieto, evitar atenção, agir com precisão cuidadosa.</p></div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Quality Assurances (QAs)</h3>
+  <p style="color:var(--text2);font-size:14px;margin-bottom:1rem;">Cada agente começa com 9 QAs distribuídas entre 3 Qualities (definidas pela Competency). Você pode <strong style="color:var(--text)">gastar QAs depois de rolar</strong> para girar dados.</p>
+
+  <div class="two-col">
+    <div class="card accent">
+      <h3>Gastar 1 QA</h3>
+      <p>Mude um dado para qualquer face — incluindo 3. Ou de 3 para qualquer outro número. Você escolhe.</p>
+    </div>
+    <div class="card">
+      <h3>Recarregamento</h3>
+      <p>Todas as QAs recarregam entre missões. Não entre cenas — só entre missões completas.</p>
+    </div>
+  </div>
+
+  <div class="warnbox mt1">
+    <div class="ico">⚠️</div>
+    <p>Se você gastar QAs para <em>criar</em> exatamente três 3s, não ativa Triscendência. Mas ainda gera 0 Chaos — o que é muito bom! Triscendência real só acontece quando os três 3s aparecem <strong>antes de qualquer ajuste</strong>.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Burnout</h3>
+  <p style="color:var(--text2);font-size:14px;margin-bottom:1rem;">Quando você rola com uma Quality que tem <strong style="color:var(--text)">0 QAs</strong>, você tem Burnout nessa rolagem.</p>
+
+  <div class="card danger">
+    <h3>Efeito do Burnout</h3>
+    <p>Cada Burnout: <strong style="color:var(--danger)">remove um 3</strong> do resultado e <strong style="color:var(--danger)">adiciona 1 Chaos</strong> extra. Se não houver 3 para remover, ainda assim adiciona o Chaos.</p>
+  </div>
+
+  <div class="infobox mt1">
+    <div class="ico">💡</div>
+    <p>Burnout pode vir de outros fontes também — principalmente de rolagens falhas. Não é só de QAs zeradas. Vários Burnouts se acumulam e podem gerar Chaos bem além do máximo normal de 6.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">✦ Triscendência</h3>
+  <div class="card warn">
+    <h3>Exatamente 3 threes, antes de qualquer ajuste</h3>
+    <p style="margin-top:0.25rem">É um sucesso automático, gera 0 Chaos, e você escolhe um bônus extra da tabela:</p>
+    <div class="three-col mt1">
+      <div style="text-align:center;">
+        <div class="badge yellow">ALL HANDS</div>
+        <p style="font-size:12px;color:var(--text2)">Adicione quantos 3s quiser a esta rolagem</p>
+      </div>
+      <div style="text-align:center;">
+        <div class="badge yellow">CIRCLE BACK</div>
+        <p style="font-size:12px;color:var(--text2)">Recupere QAs gastas de qualquer Quality</p>
+      </div>
+      <div style="text-align:center;">
+        <div class="badge yellow">EMPLOYEE OF THE MOMENT</div>
+        <p style="font-size:12px;color:var(--text2)">Receba 3 Commendations imediatamente</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HABILIDADES -->
+<div class="section" id="habilidades">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 04 — PODERES</div>
+    <h2>Suas habilidades</h2>
+    <p>Como Resonant, você tem dois tipos de poder disponíveis em campo.</p>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Ask The Agency — Alterar a Realidade</h3>
+
+  <div class="infobox">
+    <div class="ico">🌀</div>
+    <p>A qualquer momento, você pode pedir à Agency que algo aconteça. Se <em>for possível acontecer</em>, por mais improvável que seja, você pode pedir. A Agency altera o passado recente para fazer isso acontecer.</p>
+  </div>
+
+  <div class="card mt1">
+    <h3>Os 4 requisitos — nesta ordem:</h3>
+    <div class="steps mt1">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Efeito desejado</h4>
+          <p>"Quero que um engarrafamento bloqueie a fuga do carro." "Um piano cai na cabeça da Anomalia."</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Corrente de Causalidade (Causality Chain)</h4>
+          <p>Uma série de eventos mundanos que causou o efeito. Constrói colaborativamente com o grupo! O GM pode pedir mais detalhes.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Quality relevante</h4>
+          <p>Que Quality você está demonstrando? Empathy se afeta emoções, Subtlety para distrações, Dynamism para força...</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Rolagem bem-sucedida</h4>
+          <p>Role 6d4. Pelo menos um 3 = acontece. Sem 3s = a realidade retalia e distorce seu plano.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col mt1">
+    <div class="card accent">
+      <h3>✅ No sucesso</h3>
+      <p>O efeito acontece instantaneamente. Cuidado: mudar a realidade cria ondas — pode ter consequências imprevistas depois.</p>
+    </div>
+    <div class="card danger">
+      <h3>❌ Na falha</h3>
+      <p>A Realidade percebe e retalia. O GM usa o máximo da Causality Chain possível, mas distorce a seu favor. <strong style="color:var(--danger)">+1 Burnout</strong> em tentativas futuras neste local nesta missão.</p>
+    </div>
+  </div>
+
+  <div class="warnbox mt1">
+    <div class="ico">⚠️</div>
+    <p><strong>Regras importantes:</strong> Só altera coisas <em>não estabelecidas</em> ainda em jogo. Não pode controlar diretamente a vontade de uma pessoa específica — só afetar as circunstâncias ao redor dela. Uma vez feito, torna-se fato permanente da Realidade.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Anomaly Abilities — Seus poderes pessoais</h3>
+
+  <p style="color:var(--text2);font-size:14px;margin-bottom:1rem;">Cada agente tem 3 habilidades aprovadas de sua Anomalia pessoal. Todas têm uma estrutura similar:</p>
+
+  <div class="card">
+    <table>
+      <thead><tr><th>Termo</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Trigger / Cost</strong></td><td>Condição que deve acontecer antes de usar a habilidade</td></tr>
+        <tr><td><strong>On a success</strong></td><td>Efeito se tiver pelo menos 1 três</td></tr>
+        <tr><td><strong>On a failure</strong></td><td>Efeito se não tiver nenhum três</td></tr>
+        <tr><td><strong>For each additional 3</strong></td><td>Efeito extra por cada três acima do primeiro</td></tr>
+        <tr><td><strong>On every third 3</strong></td><td>Efeito a cada 3 resultados de três (1x em 3, 2x em 6...)</td></tr>
+        <tr><td><strong>On six or more 3s</strong></td><td>Só acontece com 6 ou mais threes</td></tr>
+        <tr><td><strong>Spend 3s on the following</strong></td><td>Você gasta seus threes para escolher efeitos de uma lista</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">As 9 Anomalias disponíveis</h3>
+
+  <div id="anom-pills" class="pill-grid"></div>
+  <div class="arc-detail" id="anom-detail">
+    <p class="text-muted" style="font-style:italic">Selecione uma Anomalia acima para ver sua descrição.</p>
+  </div>
+
+  <div class="infobox mt2">
+    <div class="ico">⚡</div>
+    <p>Você só pode usar poderes Anomaly <strong>durante missões</strong>. Usar fora do trabalho gera Demeritos. A Agency literalmente te mantém estável — usar sem supervisão é perigoso para você e para a Realidade.</p>
+  </div>
+</div>
+
+<!-- CONFLITO -->
+<div class="section" id="conflito">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 05 — AGENTES EM CONFLITO</div>
+    <h2>Conflito entre Agentes</h2>
+    <p>O que acontece quando dois agentes querem coisas opostas e nenhum cede.</p>
+  </div>
+
+  <div class="warnbox">
+    <div class="ico">⚠️</div>
+    <p>Conflito direto é raro, mas acontece. O sistema existe para resolver isso de forma justa e dramática — <strong>sem que as regras normais se apliquem</strong>.</p>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">Sinais de conflito direto:</h3>
+  <div class="two-col">
+    <div class="card danger">
+      <h3>⚠️ É conflito direto se:</h3>
+      <ul style="padding-left:1.25rem;font-size:13px;color:var(--text2);line-height:2">
+        <li>Um agente quer usar um poder para <em>impedir</em> outro</li>
+        <li>Um agente quer sabotar outro (aberta ou secretamente)</li>
+        <li>Dois agentes estão em loop sem ceder</li>
+        <li>Há violência entre agentes</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>✅ Não é conflito se:</h3>
+      <ul style="padding-left:1.25rem;font-size:13px;color:var(--text2);line-height:2">
+        <li>Um agente usa poder para <em>ajudar</em> outro</li>
+        <li>Agentes discordam mas os <em>jogadores</em> concordam com o resultado mais interessante</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">Como se resolve — 6 etapas:</h3>
+
+  <div class="conflict-step">
+    <div class="cs-num">1</div>
+    <div class="cs-body"><h4>Tempo para.</h4><p>O jogo para até o conflito ser resolvido.</p></div>
+  </div>
+  <div class="conflict-step">
+    <div class="cs-num">2</div>
+    <div class="cs-body"><h4>Cada agente declara seu objetivo.</h4><p>"Quero eliminar a Anomalia" vs "Quero impedir que a eliminem". "Quero donuts" vs "Quero croissants".</p></div>
+  </div>
+  <div class="conflict-step">
+    <div class="cs-num">3</div>
+    <div class="cs-body"><h4>Todos rolam 6d4 simultaneamente.</h4><p>Sem Chaos, sem Triscendência. Só contar 3s. Somam-se os resultados ao longo das rodadas.</p></div>
+  </div>
+  <div class="conflict-step">
+    <div class="cs-num">4</div>
+    <div class="cs-body"><h4>Continuam rolando.</h4><p>Até que um agente tenha ≥6 threes cumulativos E mais que os outros. Esse agente vence.</p></div>
+  </div>
+  <div class="conflict-step">
+    <div class="cs-num">5</div>
+    <div class="cs-body"><h4>Todos narram o caminho até o resultado.</h4><p>Sem restrições de poder. Sem Chaos criado. Sem Loose Ends (exceto os que fazem sentido narrativamente). Épico e sem freio.</p></div>
+  </div>
+  <div class="conflict-step">
+    <div class="cs-num">6</div>
+    <div class="cs-body"><h4>O resultado é vivenciado honestamente.</h4><p>O agente perdedor perdeu de verdade — dentro do mundo do personagem. Pode mudar a relação entre eles.</p></div>
+  </div>
+
+  <div class="infobox mt1">
+    <div class="ico">ℹ️</div>
+    <p>Conflito direto <strong>não deve resultar em morte permanente</strong>, mudança dramática forçada ou aposentadoria involuntária — a não ser que o jogador esteja ok com isso. Se um objetivo tiver essa potência, discuta antes de começar.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Métodos alternativos (opcional)</h3>
+  <div class="two-col">
+    <div class="card">
+      <h3>Votação</h3>
+      <p>Jogadores votam em como querem que a história siga. Empate = GM decide.</p>
+    </div>
+    <div class="card">
+      <h3>GM Call</h3>
+      <p>Grupos que confiam no GM deixam a decisão final com ele.</p>
+    </div>
+    <div class="card">
+      <h3>Rotating Judge</h3>
+      <p>A cada conflito, passa para um jogador diferente dar a palavra final.</p>
+    </div>
+    <div class="card">
+      <h3>Veto Points</h3>
+      <p>Cada derrota dá 1 Veto Point. Com 3 pontos, você pode garantir seu objetivo antes da decisão.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ARCO -->
+<div class="section" id="arco">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 06 — CRIAÇÃO DE PERSONAGEM</div>
+    <h2>Criando seu Agente — ARC</h2>
+    <p>Seu personagem é definido por 3 peças: <strong style="color:var(--accent)">A</strong>nomaly + <strong style="color:var(--warn)">R</strong>eality + <strong style="color:#c080f0">C</strong>ompetency</p>
+  </div>
+
+  <div class="three-col">
+    <div class="card">
+      <div class="badge green">A — ANOMALY</div>
+      <p style="color:var(--text);font-weight:600;margin-bottom:0.25rem">Seus poderes</p>
+      <p>A Anomalia que vive em você. Define suas 3 habilidades aprovadas em campo.</p>
+    </div>
+    <div class="card">
+      <div class="badge yellow">R — REALITY</div>
+      <p style="color:var(--text);font-weight:600;margin-bottom:0.25rem">Sua vida mundana</p>
+      <p>Quem você é fora do trabalho. Define seu Reality Trigger, Burnout Release e seus Relationships.</p>
+    </div>
+    <div class="card">
+      <div class="badge purple">C — COMPETENCY</div>
+      <p style="color:var(--text);font-weight:600;margin-bottom:0.25rem">Seu cargo</p>
+      <p>Seu papel na agência. Define suas QAs, comportamentos sancionados e diretriz principal.</p>
+    </div>
+  </div>
+
+  <div class="infobox mt1">
+    <div class="ico">👥</div>
+    <p>Converse com os outros jogadores! <strong>Não repitam peças do ARC</strong>. Uma equipe com Anomalias, Realities e Competencies diferentes é mais interessante — e a agência prefere assim.</p>
+  </div>
+
+  <hr>
+
+  <!-- ANOMALY SELECTOR -->
+  <div class="arc-section">
+    <div class="arc-title">A — ANOMALY (escolha uma)</div>
+    <div id="a-pills" class="pill-grid"></div>
+    <div class="arc-detail" id="a-detail"><p class="text-muted" style="font-style:italic">Clique em uma Anomalia para ver.</p></div>
+  </div>
+
+  <!-- REALITY SELECTOR -->
+  <div class="arc-section">
+    <div class="arc-title">R — REALITY (escolha uma)</div>
+    <div id="r-pills" class="pill-grid"></div>
+    <div class="arc-detail" id="r-detail"><p class="text-muted" style="font-style:italic">Clique em uma Reality para ver.</p></div>
+  </div>
+
+  <!-- COMPETENCY SELECTOR -->
+  <div class="arc-section">
+    <div class="arc-title">C — COMPETENCY (escolha uma)</div>
+    <div id="c-pills" class="pill-grid"></div>
+    <div class="arc-detail" id="c-detail"><p class="text-muted" style="font-style:italic">Clique em uma Competency para ver.</p></div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Reality — Trigger e Burnout Release</h3>
+  <div class="two-col">
+    <div class="card danger">
+      <h3>Reality Trigger</h3>
+      <p>Uma fraqueza ou vulnerabilidade da sua vida mundana. O GM pode ativar isso para criar complicações — geralmente resultando em perda de Connection num Relationship se você ignorar.</p>
+    </div>
+    <div class="card accent">
+      <h3>Burnout Release</h3>
+      <p>Uma situação específica onde você ignora todo Burnout. Quando estiver fazendo algo que <em>se encaixa</em> na sua Release, role sem o penalizador.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Relationships — Seus vínculos</h3>
+  <p style="color:var(--text2);font-size:14px;margin-bottom:1rem;">Cada agente tem 3 Relationships (definidas pelas perguntas da sua Reality). Cada uma é <strong style="color:var(--text)">interpretada por outro jogador ou pelo GM</strong> quando presente em cena.</p>
+
+  <div class="card">
+    <div class="two-col">
+      <div>
+        <div class="badge green">CONNECTION</div>
+        <p style="font-size:13px;color:var(--text2)">Sua conexão mais próxima começa com <strong style="color:var(--text)">6 Connection</strong>. As outras duas com <strong style="color:var(--text)">3 Connection</strong>.</p>
+      </div>
+      <div>
+        <div class="badge red">PERDA</div>
+        <p style="font-size:13px;color:var(--text2)">Quando você ignora o Reality Trigger, um Relationship perde Connection. Isso afeta o jogo de formas variadas.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Competency — QAs e Diretriz</h3>
+  <div class="card">
+    <h3>Você começa com 9 QAs totais</h3>
+    <p style="margin-bottom:0.75rem">Distribuídas em 3 Qualities, definidas por 3 perguntas no final da sua Competency. Responder as perguntas determina quais são suas Qualities.</p>
+    <div class="two-col">
+      <div>
+        <div class="badge purple">SANCTIONED BEHAVIORS</div>
+        <p style="font-size:12px;color:var(--text2)">Comportamentos que a agência aprova e recompensa com Commendations. Completar todos num ciclo dá bônus extra.</p>
+      </div>
+      <div>
+        <div class="badge red">PRIME DIRECTIVE</div>
+        <p style="font-size:12px;color:var(--text2)">A regra de conduta do seu cargo. Violá-la gera Demeritos imediatamente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REFERÊNCIA -->
+<div class="section" id="referencia">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 07 — REFERÊNCIA RÁPIDA</div>
+    <h2>Referência do Agente</h2>
+    <p>Tudo que você precisa consultar durante o jogo.</p>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Commendations & Demerits</h3>
+  <div class="two-col">
+    <div class="card accent">
+      <h3>🏆 Commendations</h3>
+      <p>Moeda emocional de aprovação. Usadas para comprar Requisitions (ferramentas e equipamentos) e para o MVP da missão.</p>
+      <ul style="padding-left:1.25rem;font-size:12px;color:var(--text2);margin-top:0.75rem;line-height:2">
+        <li>Capturar Anomalia: +3</li>
+        <li>Completar Sanctioned Behaviors</li>
+        <li>Completar Optional Objectives</li>
+        <li>Ajudar outro agente a perceber um Demerit</li>
+        <li>Demonstrar lealdade exemplar à agência</li>
+      </ul>
+    </div>
+    <div class="card danger">
+      <h3>⚠️ Demerits</h3>
+      <p>Ajustam seu Agency Standing. Qualquer Demerit imediatamente substitui seu Standing pelo novo.</p>
+      <ul style="padding-left:1.25rem;font-size:12px;color:var(--text2);margin-top:0.75rem;line-height:2">
+        <li>Anomalia escapar: -3</li>
+        <li>Usar Ripple Gun em alvo errado: -3</li>
+        <li>Violar a Prime Directive</li>
+        <li>Usar poderes fora do trabalho</li>
+        <li>Dobrar regras do jogo para benefício narrativo</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Agency Standing</h3>
+  <div class="standing-list">
+    <div class="standing-item good"><span class="standing-num">0</span><span>Good Standing</span></div>
+    <div class="standing-item warn"><span class="standing-num">1</span><span>Needs Improvement</span></div>
+    <div class="standing-item warn"><span class="standing-num">2</span><span>Needs Serious Improvement</span></div>
+    <div class="standing-item warn"><span class="standing-num">3</span><span>That Employee</span></div>
+    <div class="standing-item bad"><span class="standing-num">4</span><span>Alone at Lunch</span></div>
+    <div class="standing-item bad"><span class="standing-num">5</span><span>Target of Passive Aggression</span></div>
+    <div class="standing-item bad"><span class="standing-num">6</span><span>Disinvited to Parties</span></div>
+    <div class="standing-item bad"><span class="standing-num">7</span><span>We Had Such High Hopes For You</span></div>
+    <div class="standing-item bad"><span class="standing-num">8</span><span>There Is Still Time to Change</span></div>
+    <div class="standing-item bad"><span class="standing-num">9</span><span>Please Do Not Do This</span></div>
+    <div class="standing-item bad" style="grid-column: span 2; border-color: var(--danger);"><span class="standing-num" style="color:var(--danger)">10+</span><span style="color:var(--danger)">🧊 FROZEN YOGURT ROOM ACCESS REVOKED</span></div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Harm — Dano</h3>
+
+  <div class="card">
+    <table>
+      <thead><tr><th>Nível</th><th>O que representa</th><th>Loose Ends</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 Harm</strong></td><td>Força para matar um humano médio (bala, queda de altura, espada)</td><td>Parece causa mundana</td></tr>
+        <tr><td><strong>2 Harm</strong></td><td>Órgãos teleportados para fora, fogo espontâneo no cérebro</td><td>Claramente anômalo</td></tr>
+        <tr><td><strong>3 Harm</strong></td><td>Corpo torcido em espiral, halo de escuridão sussurrando nomes</td><td>Extremamente dramático</td></tr>
+        <tr><td><strong>4+ Harm</strong></td><td>Pior.</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Life Insurance Policy</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Quando você recebe Harm</h4>
+        <p>Gaste 1 QA por ponto de Harm para ignorar os efeitos. A Agency "teletransporta" o resultado do dano para outro lugar. Você não sente nada — mas qualquer testemunha vê acontecer e vira Loose End.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Se você morrer (0 QAs + Harm)</h4>
+        <p>Ressuscita na Break Room da Branch. Custo: -5 Commendations. Memórias preservadas até o momento da morte. Pode alterar 1 memória ou detalhe estético ao ressuscitar.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Se ressuscitar não for custo-efetivo</h4>
+        <p>A agência dá um pequeno estipêndio e um NDA para seus entes queridos. Boa sorte.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Perguntas frequentes</h3>
+
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Posso usar qualquer Quality quando rolo? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>O GM determina qual Quality é relevante. Você pode argumentar, mas ele tem a palavra final. Sua Causality Chain pode influenciar qual Quality se aplica ao fazer Ask The Agency.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">O que acontece se eu não rolar? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Você nunca é forçado a rolar! Rolar é sempre iniciativa do jogador. O GM pode sugerir que algo requer Ask The Agency ou uma Anomaly Ability, mas não pode te obrigar a rolar. Se você não usar suas ferramentas e tentar algo arriscado como pessoa comum, simplesmente falha — sem dados, sem dramaturgia, só "não dá".</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Como funciona o combate físico? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Não existe iniciativa, turnos ou HP. Quando algo fisicamente perigoso acontece, o GM descreve e atribui Harm. Você responde com Ask The Agency, poderes, ou absorve com Life Insurance (gastando QAs). Ações mundanas de luta — socar alguém, correr, se esconder — acontecem narrativamente sem rolagem. O GM decide se faz sentido no contexto.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Posso usar qualquer Quality quando rolo? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>O GM determina qual Quality é relevante. Você pode argumentar, mas ele tem a palavra final. Sua Causality Chain pode influenciar qual Quality se aplica — se você constrói uma situação de Empathy, provavelmente rola Empathy.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Como eu compro itens e ferramentas? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Com Commendations. Requisitions são equipamentos criados com pesquisa Anomalous — desde ferramentas de investigação até gadgets de campo. Após a primeira missão você tem acesso a um catálogo. Não existe "loja" ou "gold" — você acumula Commendations ao longo das missões e gasta entre elas.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Posso usar poderes fora do trabalho? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Tecnicamente sim, mas gera Demerits. Também é perigoso para você: sem o suporte da Agency, seu Resonant é instável. O sistema não tem bloqueio mecânico, mas as consequências são reais.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">O que são Playwalled Documents? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Seções do livro escondidas atrás do "Playwall". Você acessa conforme eventos específicos na campanha. O GM direciona quando entrar. Não leia antes — spoilers mecânicos intencionais. É aqui que boa parte da progressão do personagem acontece.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">O que é o Mission Report? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Uma ficha preenchida durante ou após cada missão com: status da Anomalia, Loose Ends criadas, análise da Anomalia (Focus, Domain, comportamento), e os resultados. Preenchido exemplarmente dá +6 Commendations para todos.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">E sobre conteúdo desconfortável? <span class="accord-arr">▼</span></div>
+    <div class="accord-body">
+      <p>O livro tem uma seção de Content Control. Antes de começar, o grupo deve discutir quais tópicos precisam de cuidado ou devem ser removidos. Exemplos de tópicos listados:</p>
+      <ul>
+        <li>Transformações corporais</li>
+        <li>Sangue, gore, dano a animais/crianças</li>
+        <li>Controle mental, invasão de privacidade</li>
+        <li>Perda de identidade, aprisionamento</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mt2" style="border-color:var(--accent2)">
+    <h3>Resumo rápido de uma rolagem</h3>
+    <div class="steps mt1">
+      <div class="step"><div class="step-num">①</div><div class="step-body"><h4>Role 6d4</h4><p>Sempre 6 dados.</p></div></div>
+      <div class="step"><div class="step-num">②</div><div class="step-body"><h4>Verifique Burnout</h4><p>Se a Quality usada tem 0 QAs: remove 1 três e adiciona 1 Chaos.</p></div></div>
+      <div class="step"><div class="step-num">③</div><div class="step-body"><h4>Gaste QAs se quiser</h4><p>Mude dados. 1 QA = 1 dado muda de face.</p></div></div>
+      <div class="step"><div class="step-num">④</div><div class="step-body"><h4>Conte os 3s</h4><p>Exatamente 3 = Triscendência. ≥1 = sucesso. 0 = falha.</p></div></div>
+      <div class="step"><div class="step-num">⑤</div><div class="step-body"><h4>Calcule o Chaos</h4><p>Dados que não mostraram 3 = Chaos gerado (exceto em Triscendência).</p></div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+const anomalies = {
+  "Whisper": { tagline: "É pra você.", desc: "Mestres do momento em que o som vira informação. Manipulam conversas, alteram o que foi dito, leem pensamentos. Careless e manipulativos — por que ter cautela quando podem sempre dar um do-over? Habilidades focadas em comunicação, percepção mental e controle de narrativa." },
+  "Catalogue": { tagline: "Devidamente arquivado.", desc: "Organizam e acessam informação de formas impossíveis. Podem catalogar propriedades de objetos e pessoas, revelar histórico oculto, e conectar padrões que ninguém mais perceberia. O 'arquivo' do time." },
+  "Drain": { tagline: "Você vai me dar isso.", desc: "Absorvem energia, emoções, memórias ou capacidades de outros. Cada ativação tira algo de alguém e pode dar para outro. Poderosos em situações onde 'roubar' do inimigo é mais eficaz que atacá-lo." },
+  "Timepiece": { tagline: "Pontualidade é uma virtude.", desc: "Interagem com o tempo de formas limitadas — desacelerar momentos, reagir antes de eventos, perceber o que está prestes a acontecer. Não viajam no tempo; apenas leem e exploram fluxos temporais." },
+  "Growth": { tagline: "Grande, maior, maior ainda.", desc: "Crescem e fazem coisas crescerem — física, emocional ou metaforicamente. Podem amplificar situações, aumentar a intensidade de sentimentos ou manipular escala de objetos e pessoas." },
+  "Gun": { tagline: "Não pergunte.", desc: "Anomalia de conflito e força direta. Habilidades voltadas para ação física, pressão e destruição controlada. A escolha para agentes que preferem Dynamism e gostam de resultados imediatos e explosivos." },
+  "Dream": { tagline: "Isso é real.", desc: "Manipulam a percepção da realidade — o que parece real, o que parece sonho. Podem acessar o subconsciente de pessoas, criar ilusões sensoriais ou tornar experiências sonhadas em algo físico temporário." },
+  "Manifold": { tagline: "Todas as opções ao mesmo tempo.", desc: "Criam cópias, duplicatas ou versões paralelas de coisas. Multiplicidade é o tema central. De cópias físicas de objetos a ecos de pessoas — tudo pode ter mais de uma versão com Manifold." },
+  "Absence": { tagline: "O que falta importa tanto quanto o que está.", desc: "A Anomalia do espaço vazio e da remoção. Apagam presença, removem objetos de percepção, criam buracos onde havia coisas. Extremamente discretos, assustadoramente eficazes." }
+};
+
+const realities = {
+  "Caretaker": { tagline: "Alguém depende de você.", desc: "Você cuida de alguém (um 'Dependent'). Quando você está ausente, esse NPC pode entrar em apuros. Burnout Release: fazer algo que proteja ou melhore a vida do Dependent. Reality Trigger: o GM coloca seu Dependent em situação de necessidade." },
+  "Overbooked": { tagline: "Dois empregos, um corpo.", desc: "Você tem outro emprego além da Agency. Às vezes o trabalho mundano interfere. Burnout Release: quando estiver fazendo algo que beneficia seu emprego mundano. Reality Trigger: seu chefe/cliente mundano te chama no pior momento." },
+  "Pursued": { tagline: "Alguém do seu passado quer te encontrar.", desc: "Você está fugindo de algo ou alguém. Isso te motiva mas também te vulnerabiliza. Burnout Release: agir para se esconder ou eliminar a ameaça. Reality Trigger: pistas do passado surgem, ameaçando te encontrar." },
+  "Star": { tagline: "Todo mundo te conhece.", desc: "Você é famoso em algo. Isso abre portas e cria problemas — fãs, expectativas, exposição. Burnout Release: fazer algo que destaque seu talento. Reality Trigger: seu maior fã aparece no pior momento." },
+  "Struggling": { tagline: "Nunca é suficiente.", desc: "Você está sempre no limite financeiro e emocional. Burnout Release: quando você está fazendo algo para melhorar sua situação. Reality Trigger: algo que você precisava cai por terra — contas, oportunidades, recursos." },
+  "Newborn": { tagline: "O mundo é novo para você.", desc: "Você é literalmente novo no mundo — recém-nascido, recém-ativado, recém chegado. Não sabe fazer coisas comuns. Burnout Release: agir para se adaptar e se encaixar. Reality Trigger: você esquece como fazer algo trivial." },
+  "Romantic": { tagline: "O amor é complicado.", desc: "Você se apaixona facilmente e cria teias emocionais complexas. Burnout Release: fazer algo que te faça parecer atraente ou simpático. Reality Trigger: um interesse romântico aparece em hora errada." },
+  "Backbone": { tagline: "Você lidera uma organização.", desc: "Você é chefe de um grupo (crime family, clube, seita, loja...). Membros te pedem coisas, rivais ameaçam, e você é responsável por todos. Burnout Release: agir para aumentar influência da organização. Reality Trigger: um membro te precisa agora." },
+  "Creature": { tagline: "Você não é bem humano.", desc: "Você é um ser não-humano vivendo disfarçado (vampiro, robô, tartaruga mutante...). Sua verdadeira natureza tem necessidades. Burnout Release: fazer algo que te faça parecer menos interessante/suspeito. Reality Trigger: um impulso da sua verdadeira natureza aflorá." }
+};
+
+const competencies = {
+  "PR": { tagline: "Relações Públicas", desc: "Explain away Anomalous effects e redirecione testemunhas. QAs em Qualities de persuasão e influência. Prime Directive relacionada à reputação. Excelente para gerenciar Loose Ends com palavras." },
+  "R&D": { tagline: "Pesquisa & Desenvolvimento", desc: "Estudar Anomalias e criar Requisitions. Foco em Attentiveness e análise. Se você quer entender as Anomalias antes de agir, R&D é o caminho." },
+  "Barista": { tagline: "Serviços de Bebidas", desc: "Serve bebidas no lobby e em campo — mas muito mais que isso. Contatos em toda agência, presença em todos os ambientes, e surpreendentemente eficaz em obter informações." },
+  "CEO": { tagline: "Liderança Executiva", desc: "Você opera em alto nível. Acesso a recursos e autoridade. Alta expectativa de comportamento e grandes consequências por falha. Presence e Professionalism são suas Qualities centrais." },
+  "Intern": { tagline: "Estagiário", desc: "Você faz o trabalho que ninguém quer. Mas isso significa que você está em todo lugar, vê tudo, e passa despercebido. Subtlety e Initiative são comuns aqui." },
+  "Gravedigger": { tagline: "Serviços Finais", desc: "Lida com os resultados mais... permanentes das missões. Clean-up especializado. QAs focadas em Persistence e sigilo absoluto." },
+  "Reception": { tagline: "Recepção", desc: "Controla o acesso — de pessoas, informações e recursos. Pode abrir (ou fechar) muitas portas. Literalmente e figurativamente." },
+  "Hotline": { tagline: "Linha de Apoio", desc: "Primeira linha de contato com o mundo exterior. Monitora sinais de atividade Anomalous e coordena campo. Attentiveness é essencial aqui." },
+  "Clown": { tagline: "Entretenimento Corporativo", desc: "O mais improvável dos cargos — e talvez o mais poderoso em termos de manipulação social. Presença, disfarce, e absurdo como ferramenta são a marca registrada." }
+};
+
+function makeAccordion(containerId, detailId, data) {
+  const pills = document.getElementById(containerId);
+  const detail = document.getElementById(detailId);
+  if (!pills) return;
+  Object.keys(data).forEach(k => {
+    const pill = document.createElement('span');
+    pill.className = 'pill';
+    pill.textContent = k;
+    pill.onclick = () => {
+      pills.querySelectorAll('.pill').forEach(p => p.classList.remove('sel'));
+      pill.classList.add('sel');
+      const d = data[k];
+      detail.innerHTML = `<h3>${k}</h3><div class="tagline">${d.tagline}</div><p>${d.desc}</p>`;
+    };
+    pills.appendChild(pill);
+  });
+}
+
+makeAccordion('anom-pills', 'anom-detail', anomalies);
+makeAccordion('a-pills', 'a-detail', anomalies);
+makeAccordion('r-pills', 'r-detail', realities);
+makeAccordion('c-pills', 'c-detail', competencies);
+
+function go(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(sec).classList.add('active');
+  const navLink = document.querySelector(`nav a[data-sec="${sec}"]`);
+  if (navLink) navLink.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    go(a.dataset.sec);
+  });
+});
+
+function toggleAccord(el) {
+  el.classList.toggle('open');
+}
+
+function rollDice() {
+  const display = document.getElementById('dice-display');
+  const result = document.getElementById('roll-result');
+  const dice = Array.from({length: 6}, () => Math.floor(Math.random() * 4) + 1);
+  const threes = dice.filter(d => d === 3).length;
+  const chaos = dice.filter(d => d !== 3).length;
+
+  display.innerHTML = '';
+  dice.forEach(v => {
+    const die = document.createElement('div');
+    die.className = 'die' + (v === 3 ? ' three' : '');
+    die.textContent = v;
+    display.appendChild(die);
+  });
+
+  if (threes === 3) {
+    result.className = 'tris';
+    result.textContent = `✦ TRISCENDÊNCIA! ${threes} threes — sucesso sem Chaos. Escolha um bônus!`;
+  } else if (threes >= 1) {
+    result.className = 'success';
+    result.textContent = `Sucesso! ${threes} three${threes>1?'s':''} — ${chaos} Chaos gerado${chaos>0?'.':'.'}`
+  } else {
+    result.className = 'fail';
+    result.textContent = `Falha. 0 threes — 6 Chaos gerado.`;
+  }
+}
+</script>
+</body>
+</html>
