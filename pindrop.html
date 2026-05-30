@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>PINDROP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    background: #050505;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+    height: 100%;
+    font-family: 'Press Start 2P', monospace;
+    color: #f0f0f0;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse at center, #0a0a0a 0%, #000 80%);
+    position: fixed;
+    inset: 0;
+  }
+
+  #cabinet-wrap {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform-origin: center center;
+    transform: translate(-50%, -50%) scale(1);
+    will-change: transform;
+  }
+
+  .cabinet {
+    background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+    border: 10px solid #2a2a2a;
+    border-radius: 32px;
+    padding: 28px 28px 36px;
+    box-shadow:
+      0 0 80px rgba(255,255,255,0.06),
+      inset 0 0 40px rgba(0,0,0,0.6),
+      0 20px 60px rgba(0,0,0,0.8);
+    position: relative;
+  }
+
+  .cabinet::before {
+    content: 'P I N D R O P';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    padding: 6px 22px;
+    font-size: 12px;
+    letter-spacing: 6px;
+    color: #dcdcdc;
+    text-shadow: 0 0 6px #fff, 0 0 12px rgba(255,255,255,0.5);
+    border-radius: 4px;
+    border: 1px solid #333;
+  }
+
+  .screen {
+    width: 580px;
+    height: 470px;
+    background: #000;
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      inset 0 0 60px rgba(120,120,120,0.15),
+      inset 0 0 4px rgba(255,255,255,0.1);
+    touch-action: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Swipe gesture indicator */
+  .swipe-flash {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    font-family: 'VT323', monospace;
+    font-size: 140px;
+    color: #fff;
+    text-shadow:
+      0 0 12px #fff,
+      0 0 24px rgba(255,255,255,0.7),
+      0 0 48px rgba(255,255,255,0.3);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 998;
+    line-height: 1;
+  }
+  .swipe-flash.show { animation: swipe-pop 0.45s ease-out; }
+  @keyframes swipe-pop {
+    0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.5); }
+    30%  { opacity: 0.85; transform: translate(-50%, -50%) scale(1.15); }
+    100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.4); }
+  }
+
+  /* CRT scanlines */
+  .screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.22) 2px,
+      rgba(0,0,0,0.22) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* CRT vignette */
+  .screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 30%,
+      rgba(0,0,0,0.65) 100%
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    display: none;
+    padding: 24px;
+  }
+
+  .scene.active { display: block; }
+
+  .glow {
+    color: #f8f8f8;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 10px rgba(255,255,255,0.8),
+      0 0 20px rgba(255,255,255,0.4);
+  }
+
+  /* ============ ATTRACT MODE ============ */
+  .attract-congrats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    font-size: 18px;
+    line-height: 2.2;
+    letter-spacing: 3px;
+  }
+
+  .attract-congrats > div {
+    color: #f8f8f8;
+    text-shadow: 0 0 4px #fff, 0 0 12px rgba(255,255,255,0.6);
+  }
+
+  .attract-scores {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 0 90px;
+    gap: 8px;
+  }
+
+  .attract-scores .row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'VT323', monospace;
+    font-style: italic;
+    font-size: 32px;
+    letter-spacing: 4px;
+    color: #f5f5f5;
+    text-shadow:
+      0 0 3px #fff,
+      0 0 8px rgba(255,255,255,0.7),
+      0 0 16px rgba(255,255,255,0.3);
+  }
+
+  .press-start {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10px;
+    animation: blink 1.1s infinite;
+    letter-spacing: 3px;
+    color: #f8f8f8;
+    text-shadow: 0 0 6px #fff;
+    z-index: 5;
+  }
+
+  @keyframes blink {
+    0%, 55% { opacity: 1; }
+    56%, 100% { opacity: 0; }
+  }
+
+  /* ============ MAZE ============ */
+  .hud {
+    text-align: center;
+    font-size: 10px;
+    padding: 6px 0 10px;
+    letter-spacing: 3px;
+    color: #f0f0f0;
+    text-shadow: 0 0 4px #fff;
+  }
+
+  .hud .v { color: #ffeb55; text-shadow: 0 0 6px #ffeb55; margin: 0 4px; }
+  .hud .sep { color: #555; margin: 0 14px; }
+
+  #maze-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  #maze-canvas {
+    background: #000;
+    display: block;
+    image-rendering: pixelated;
+  }
+
+  /* ============ RHYTHM (PINDROP BEATS) ============ */
+  .rhythm-stage {
+    position: relative;
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2px;
+  }
+
+  #rhythm-canvas {
+    background: #000;
+    display: block;
+    border-radius: 6px;
+    box-shadow:
+      0 0 24px rgba(180, 80, 255, 0.35),
+      inset 0 0 30px rgba(0,0,0,0.6);
+  }
+
+  .judgement {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 0 8px currentColor, 0 0 20px currentColor;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 5;
+    white-space: nowrap;
+  }
+  .judgement.pop { animation: judge-pop 0.55s ease-out; }
+  @keyframes judge-pop {
+    0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.4); }
+    20%  { opacity: 1;   transform: translate(-50%, -50%) scale(1.3); }
+    100% { opacity: 0;   transform: translate(-50%, -85%) scale(1.5); }
+  }
+
+  .combo-box {
+    position: absolute;
+    top: 56px;
+    left: 14px;
+    text-align: left;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .combo-box .combo-num {
+    font-family: 'VT323', monospace;
+    font-style: italic;
+    font-size: 40px;
+    color: #ffeb55;
+    text-shadow: 0 0 6px #ffeb55, 0 0 18px rgba(255,235,85,0.6);
+    line-height: 1;
+    transition: transform 0.12s ease-out;
+  }
+  .combo-box .combo-label {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #ffeb55;
+    opacity: 0.8;
+  }
+  .combo-box.bump .combo-num { transform: scale(1.35); }
+
+  .mult-box {
+    position: absolute;
+    top: 56px;
+    right: 14px;
+    text-align: right;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .mult-box .mult-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 22px;
+    color: #ff4d8a;
+    text-shadow: 0 0 6px #ff4d8a, 0 0 18px rgba(255,77,138,0.6);
+    line-height: 1;
+  }
+  .mult-box .mult-label {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #ff4d8a;
+    opacity: 0.8;
+  }
+
+  .energy-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #aaa;
+  }
+  .energy-bar {
+    width: 360px;
+    height: 8px;
+    border: 1px solid #aaa;
+    background: #111;
+    overflow: hidden;
+  }
+  .energy-bar > div {
+    height: 100%;
+    background: linear-gradient(90deg, #ff4d8a 0%, #ffeb55 50%, #5cff8c 100%);
+    width: 70%;
+    transition: width 0.2s;
+    box-shadow: 0 0 8px rgba(255,255,255,0.4);
+  }
+
+  .rhythm-hint {
+    font-size: 8px;
+    opacity: 0.6;
+    letter-spacing: 2px;
+    color: #d0d0d0;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* ============ INITIALS ============ */
+  .initials-screen {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    text-align: center;
+  }
+
+  .initials-prompt {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #f8f8f8;
+    text-shadow: 0 0 6px #fff;
+  }
+
+  .initials-input {
+    display: flex;
+    gap: 28px;
+    font-family: 'VT323', monospace;
+    font-style: italic;
+    font-size: 72px;
+  }
+
+  .initial-slot {
+    padding: 6px 18px;
+    border-bottom: 4px solid #555;
+    opacity: 0.55;
+    color: #f5f5f5;
+    text-shadow: 0 0 4px #fff, 0 0 12px rgba(255,255,255,0.4);
+    min-width: 60px;
+  }
+
+  .initial-slot.active {
+    opacity: 1;
+    border-bottom-color: #fff;
+    animation: blink 0.7s infinite;
+  }
+
+  .initials-hint {
+    font-size: 9px;
+    opacity: 0.65;
+    letter-spacing: 2px;
+    line-height: 2;
+    color: #d0d0d0;
+  }
+
+  /* ============ NEW HIGH SCORE ============ */
+  .newhigh {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .newhigh .label { font-size: 14px; letter-spacing: 3px; color: #f8f8f8; text-shadow: 0 0 6px #fff; }
+  .newhigh .name {
+    font-family: 'VT323', monospace;
+    font-style: italic;
+    font-size: 80px;
+    letter-spacing: 8px;
+    color: #f8f8f8;
+    text-shadow: 0 0 6px #fff, 0 0 16px rgba(255,255,255,0.5);
+    margin: 4px 0;
+  }
+  .newhigh .score {
+    font-family: 'VT323', monospace;
+    font-style: italic;
+    font-size: 44px;
+    color: #ffeb55;
+    text-shadow: 0 0 6px #ffeb55, 0 0 14px rgba(255,235,85,0.6);
+    letter-spacing: 4px;
+  }
+
+  /* ============ CONTROLS LEGEND ============ */
+  .legend {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #777;
+    line-height: 1.8;
+  }
+  .legend kbd {
+    display: inline-block;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin: 0 2px;
+    background: #1a1a1a;
+    color: #ccc;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+  }
+
+  .footer {
+    margin-top: 12px;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #444;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div id="cabinet-wrap">
+<div class="cabinet">
+  <div class="screen" id="screen">
+    <div class="swipe-flash" id="swipe-flash"></div>
+
+    <!-- ATTRACT MODE -->
+    <div class="scene" id="scene-attract">
+      <div id="attract-content"></div>
+      <div class="press-start">TAP OR PRESS [SPACE] TO START</div>
+    </div>
+
+    <!-- MAZE -->
+    <div class="scene" id="scene-maze">
+      <div class="hud">
+        POWER<span class="v" id="hud-power">00</span>
+        <span class="sep">|</span>
+        SCORE<span class="v" id="hud-score">0000</span>
+        <span class="sep">|</span>
+        DOTS<span class="v" id="hud-dots">00</span>
+      </div>
+      <div id="maze-wrap">
+        <canvas id="maze-canvas" width="420" height="364"></canvas>
+      </div>
+    </div>
+
+    <!-- RHYTHM (PINDROP BEATS) -->
+    <div class="scene" id="scene-fight">
+      <div class="hud">
+        POWER<span class="v" id="fight-power">00</span>
+        <span class="sep">|</span>
+        SCORE<span class="v" id="fight-score">0000</span>
+      </div>
+      <div class="rhythm-stage">
+        <canvas id="rhythm-canvas" width="510" height="320"></canvas>
+        <div class="combo-box" id="combo-box">
+          <div class="combo-num" id="combo-num">0</div>
+          <div class="combo-label">COMBO</div>
+        </div>
+        <div class="mult-box" id="mult-box">
+          <div class="mult-num" id="mult-num">x1</div>
+          <div class="mult-label">MULTI</div>
+        </div>
+        <div class="judgement" id="judgement"></div>
+        <div class="energy-row">
+          <span>ENERGY</span>
+          <div class="energy-bar"><div id="energy-fill" style="width:70%"></div></div>
+        </div>
+        <div class="rhythm-hint">SWIPE ↑↓←→ OR TAP LANE TO HIT THE BEAT</div>
+      </div>
+    </div>
+
+    <!-- INITIALS -->
+    <div class="scene" id="scene-initials">
+      <div class="initials-screen">
+        <div class="initials-prompt">ENTER YOUR INITIALS</div>
+        <div class="initials-input" id="initials-input"></div>
+        <div class="initials-hint">
+          SWIPE ↑↓ CHANGE LETTER &nbsp;·&nbsp; SWIPE ←→ MOVE<br>
+          TAP OR PRESS [ENTER] TO CONFIRM
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW HIGH SCORE -->
+    <div class="scene" id="scene-newhigh">
+      <div class="newhigh">
+        <div class="label">CONGRATULATIONS,</div>
+        <div class="name" id="nh-name">AAA</div>
+        <div class="label">ON THE NEW HIGH SCORE!</div>
+        <div class="score" id="nh-score">000</div>
+      </div>
+      <div class="press-start">TAP OR PRESS [SPACE] TO CONTINUE</div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    SWIPE <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> ON SCREEN TO MOVE &amp; FIGHT
+    &nbsp;·&nbsp; TAP TO CONFIRM
+  </div>
+  <div class="footer">LAUNDROCADE ARCADE &nbsp;·&nbsp; © MANNY ENT. &nbsp;·&nbsp; INSERT COIN</div>
+</div>
+</div>
+
+<script>
+'use strict';
+
+// ============================================================
+// HIGH SCORES from the arcade cabinet display
+// Letters spell: "SOME OF US ARE TRYING TO SLEEP"
+// ============================================================
+const HIGH_SCORES = [
+  { name: 'SOM', score: 191513 },
+  { name: 'EOF', score: 5156   },
+  { name: 'USA', score: 21191  },
+  { name: 'RET', score: 18520  },
+  { name: 'RYI', score: 18259  },
+  { name: 'NGT', score: 14720  },
+  { name: 'OSL', score: 151912 },
+  { name: 'EEP', score: 5516   }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const STATES = {
+  ATTRACT:  'attract',
+  MAZE:     'maze',
+  FIGHT:    'fight',
+  INITIALS: 'initials',
+  NEWHIGH:  'newhigh'
+};
+let state = STATES.ATTRACT;
+
+function showScene(name) {
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('scene-' + name).classList.add('active');
+}
+
+// ============================================================
+// ATTRACT MODE — cycles between Manny congrats and high scores
+// ============================================================
+let attractToggle = 0;
+let attractInterval = null;
+
+function renderAttract() {
+  const el = document.getElementById('attract-content');
+  if (attractToggle === 0) {
+    el.innerHTML = `
+      <div class="attract-congrats">
+        <div>CONGRATULATIONS,</div>
+        <div>MANNY,</div>
+        <div>&nbsp;</div>
+        <div>ON THE NEW</div>
+        <div>HIGH SCORE!</div>
+      </div>`;
+  } else {
+    const rows = HIGH_SCORES.map(h =>
+      `<div class="row"><span>${h.name}</span><span>${h.score}</span></div>`
+    ).join('');
+    el.innerHTML = `<div class="attract-scores">${rows}</div>`;
+  }
+  attractToggle = 1 - attractToggle;
+}
+
+function startAttract() {
+  state = STATES.ATTRACT;
+  showScene('attract');
+  attractToggle = 0;
+  renderAttract();
+  if (attractInterval) clearInterval(attractInterval);
+  attractInterval = setInterval(renderAttract, 4200);
+}
+
+function stopAttract() {
+  if (attractInterval) { clearInterval(attractInterval); attractInterval = null; }
+}
+
+// ============================================================
+// MAZE PHASE — Pac-Man style chase, accumulate POWER
+// ============================================================
+const MAZE_LAYOUT = [
+  '###############',
+  '#......#......#',
+  '#.####.#.####.#',
+  '#.#.........#.#',
+  '#.#.###.###.#.#',
+  '#...#.....#...#',
+  '##.##.###.##.##',
+  '#.....#.#.....#',
+  '#.###.#.#.###.#',
+  '#.#.........#.#',
+  '#.#.#######.#.#',
+  '#......#......#',
+  '###############'
+];
+
+const CELL = 28;
+const COLS = 15;
+const ROWS = 13;
+
+let maze = [];
+let player = { x: 1, y: 1, dx: 0, dy: 0, nextDx: 0, nextDy: 0 };
+let ghosts = [];
+let power = 0;
+let actualScore = 0;
+let dotsLeft = 0;
+let mazeLoop = null;
+let mazeTick = 0;
+
+function initMaze() {
+  maze = MAZE_LAYOUT.map(row => row.split(''));
+  dotsLeft = 0;
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      if (maze[y][x] === '.') dotsLeft++;
+    }
+  }
+  player = { x: 1, y: 1, dx: 0, dy: 0, nextDx: 0, nextDy: 0 };
+  ghosts = [
+    { x: 7,  y: 6, dx: 1,  dy: 0, color: '#ff5c5c' },
+    { x: 13, y: 11, dx: -1, dy: 0, color: '#ffa05c' }
+  ];
+  power = 0;
+  actualScore = 0;
+  updateHud();
+}
+
+function updateHud() {
+  document.getElementById('hud-power').textContent = String(power).padStart(2, '0');
+  document.getElementById('hud-score').textContent = String(actualScore).padStart(4, '0');
+  document.getElementById('hud-dots').textContent  = String(dotsLeft).padStart(2, '0');
+}
+
+function startMaze() {
+  state = STATES.MAZE;
+  showScene('maze');
+  initMaze();
+  mazeTick = 0;
+  drawMaze();
+  if (mazeLoop) clearInterval(mazeLoop);
+  mazeLoop = setInterval(() => {
+    mazeTick++;
+    movePlayer();
+    if (mazeTick % 2 === 0) moveGhosts();
+    if (checkCaught()) {
+      flashPlayer();
+      endMaze('caught');
+      return;
+    }
+    if (dotsLeft === 0 || power >= 30) {
+      endMaze('cleared');
+      return;
+    }
+    drawMaze();
+  }, 130);
+}
+
+function canMove(x, y, dx, dy) {
+  const nx = x + dx, ny = y + dy;
+  return maze[ny] && maze[ny][nx] !== '#';
+}
+
+function movePlayer() {
+  // Try queued turn first
+  if ((player.nextDx !== 0 || player.nextDy !== 0) &&
+      canMove(player.x, player.y, player.nextDx, player.nextDy)) {
+    player.dx = player.nextDx;
+    player.dy = player.nextDy;
+    player.nextDx = 0;
+    player.nextDy = 0;
+  }
+  if (canMove(player.x, player.y, player.dx, player.dy)) {
+    player.x += player.dx;
+    player.y += player.dy;
+    const c = maze[player.y][player.x];
+    if (c === '.') {
+      maze[player.y][player.x] = ' ';
+      dotsLeft--;
+      power++;
+      actualScore += 10;
+      updateHud();
+    }
+  } else {
+    player.dx = 0;
+    player.dy = 0;
+  }
+}
+
+function moveGhosts() {
+  ghosts.forEach(g => {
+    const dirs = [
+      { dx: 1,  dy: 0 },
+      { dx: -1, dy: 0 },
+      { dx: 0,  dy: 1 },
+      { dx: 0,  dy: -1 }
+    ];
+    const options = dirs.filter(d => {
+      if (!canMove(g.x, g.y, d.dx, d.dy)) return false;
+      // avoid reversing unless forced
+      if (d.dx === -g.dx && d.dy === -g.dy) return false;
+      return true;
+    });
+    let dir;
+    if (options.length === 0) {
+      dir = { dx: -g.dx, dy: -g.dy };
+    } else if (Math.random() < 0.72) {
+      // chase player (manhattan distance)
+      options.sort((a, b) => {
+        const da = Math.abs(g.x + a.dx - player.x) + Math.abs(g.y + a.dy - player.y);
+        const db = Math.abs(g.x + b.dx - player.x) + Math.abs(g.y + b.dy - player.y);
+        return da - db;
+      });
+      dir = options[0];
+    } else {
+      dir = options[Math.floor(Math.random() * options.length)];
+    }
+    g.dx = dir.dx;
+    g.dy = dir.dy;
+    if (canMove(g.x, g.y, g.dx, g.dy)) {
+      g.x += g.dx;
+      g.y += g.dy;
+    }
+  });
+}
+
+function checkCaught() {
+  return ghosts.some(g => g.x === player.x && g.y === player.y);
+}
+
+function flashPlayer() {
+  drawMaze(true);
+}
+
+function drawMaze(playerHit) {
+  const canvas = document.getElementById('maze-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Walls + dots
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const c = maze[y][x];
+      const cx = x * CELL;
+      const cy = y * CELL;
+      if (c === '#') {
+        // glowing maze walls
+        ctx.fillStyle = '#0a1f5a';
+        ctx.fillRect(cx + 3, cy + 3, CELL - 6, CELL - 6);
+        ctx.strokeStyle = '#4a6acc';
+        ctx.lineWidth = 1.5;
+        ctx.shadowColor = '#3a5acc';
+        ctx.shadowBlur = 4;
+        ctx.strokeRect(cx + 3, cy + 3, CELL - 6, CELL - 6);
+        ctx.shadowBlur = 0;
+      } else if (c === '.') {
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.arc(cx + CELL / 2, cy + CELL / 2, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+  }
+
+  // Player (glowing triangle — agent vibe)
+  const px = player.x * CELL + CELL / 2;
+  const py = player.y * CELL + CELL / 2;
+  ctx.fillStyle = playerHit ? '#ff5c5c' : '#ffffff';
+  ctx.shadowColor = playerHit ? '#ff5c5c' : '#ffffff';
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  const a = 9;
+  // rotate triangle by direction
+  let rot = 0;
+  if (player.dy === -1) rot = 0;
+  else if (player.dx === 1) rot = Math.PI / 2;
+  else if (player.dy === 1) rot = Math.PI;
+  else if (player.dx === -1) rot = -Math.PI / 2;
+  ctx.translate(px, py);
+  ctx.rotate(rot);
+  ctx.moveTo(0, -a);
+  ctx.lineTo(-a, a * 0.85);
+  ctx.lineTo(a, a * 0.85);
+  ctx.closePath();
+  ctx.fill();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.shadowBlur = 0;
+
+  // Ghosts
+  ghosts.forEach(g => {
+    const gx = g.x * CELL + CELL / 2;
+    const gy = g.y * CELL + CELL / 2;
+    ctx.fillStyle = g.color;
+    ctx.shadowColor = g.color;
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(gx, gy - 1, 10, Math.PI, 0);
+    ctx.lineTo(gx + 10, gy + 9);
+    ctx.lineTo(gx + 6, gy + 6);
+    ctx.lineTo(gx + 2, gy + 9);
+    ctx.lineTo(gx - 2, gy + 6);
+    ctx.lineTo(gx - 6, gy + 9);
+    ctx.lineTo(gx - 10, gy + 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // eyes
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(gx - 5, gy - 3, 3, 4);
+    ctx.fillRect(gx + 2, gy - 3, 3, 4);
+    ctx.fillStyle = '#0a1f5a';
+    ctx.fillRect(gx - 4, gy - 2, 2, 3);
+    ctx.fillRect(gx + 3, gy - 2, 2, 3);
+  });
+}
+
+function endMaze() {
+  if (mazeLoop) { clearInterval(mazeLoop); mazeLoop = null; }
+  setTimeout(startFight, 700);
+}
+
+// ============================================================
+// RHYTHM PHASE — "Pindrop Beats" — neon Guitar-Hero on a CRT
+// ============================================================
+const LANES = [
+  { key: 'ArrowLeft',  symbol: '◀', color: '#ff4d8a' },
+  { key: 'ArrowDown',  symbol: '▼', color: '#4dc3ff' },
+  { key: 'ArrowUp',    symbol: '▲', color: '#5cff8c' },
+  { key: 'ArrowRight', symbol: '▶', color: '#ffeb55' }
+];
+const NOTE_TRAVEL_MS     = 1500;
+const HIT_WINDOW_PERFECT = 70;
+const HIT_WINDOW_GOOD    = 150;
+
+let rhythmNotes    = [];
+let rhythmStart    = 0;
+let rhythmRaf      = null;
+let rhythmCombo    = 0;
+let rhythmMaxCombo = 0;
+let rhythmMult     = 1;
+let rhythmEnergy   = 70;
+let rhythmDone     = false;
+let rhythmEndMode  = '';
+const laneFlash    = [0, 0, 0, 0];
+
+function startFight() {
+  state = STATES.FIGHT;
+  showScene('fight');
+  rhythmNotes    = buildSong(power);
+  rhythmCombo    = 0;
+  rhythmMaxCombo = 0;
+  rhythmMult     = 1;
+  rhythmEnergy   = 70;
+  rhythmDone     = false;
+  rhythmEndMode  = '';
+  laneFlash[0] = laneFlash[1] = laneFlash[2] = laneFlash[3] = 0;
+  document.getElementById('judgement').classList.remove('pop');
+  updateRhythmHud();
+  rhythmStart = performance.now();
+  if (rhythmRaf) cancelAnimationFrame(rhythmRaf);
+  rhythmRaf = requestAnimationFrame(rhythmTick);
+}
+
+function buildSong(pwr) {
+  const beat = 454; // ~132 BPM
+  const intensity = Math.max(8, Math.min(28, pwr));
+  const beats = 18 + intensity;
+  const notes = [];
+  let t = 1500; // count-in so first notes have travel time
+  let lastLane = -1;
+  for (let i = 0; i < beats; i++) {
+    let lane = Math.floor(Math.random() * 4);
+    if (lane === lastLane) lane = (lane + 1 + Math.floor(Math.random() * 3)) % 4;
+    notes.push({ time: t, lane, hit: false, missed: false });
+    lastLane = lane;
+    if (intensity > 12 && Math.random() < 0.22) {
+      const extra = (lane + 2) % 4;
+      notes.push({ time: t + beat * 0.5, lane: extra, hit: false, missed: false });
+      lastLane = extra;
+    }
+    const gap = (i % 4 === 3 && intensity > 10) ? beat * 0.75 : beat;
+    t += gap;
+  }
+  return notes;
+}
+
+function updateRhythmHud() {
+  document.getElementById('fight-power').textContent = String(power).padStart(2, '0');
+  document.getElementById('fight-score').textContent = String(actualScore).padStart(4, '0');
+  document.getElementById('combo-num').textContent   = rhythmCombo;
+  document.getElementById('mult-num').textContent    = 'x' + rhythmMult;
+  document.getElementById('energy-fill').style.width = rhythmEnergy + '%';
+}
+
+function showJudgement(text, color) {
+  const el = document.getElementById('judgement');
+  el.textContent = text;
+  el.style.color = color;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+function bumpCombo() {
+  const box = document.getElementById('combo-box');
+  box.classList.remove('bump');
+  void box.offsetWidth;
+  box.classList.add('bump');
+}
+
+function flashLane(lane, hit) {
+  laneFlash[lane] = hit ? 1 : 0.45;
+}
+
+function rhythmTick() {
+  if (rhythmDone) return;
+  const now = performance.now() - rhythmStart;
+
+  for (const n of rhythmNotes) {
+    if (!n.hit && !n.missed && (now - n.time) > HIT_WINDOW_GOOD) {
+      n.missed = true;
+      rhythmCombo = 0;
+      rhythmMult  = 1;
+      rhythmEnergy = Math.max(0, rhythmEnergy - 8);
+      updateRhythmHud();
+      showJudgement('MISS', '#ff5c5c');
+      if (rhythmEnergy <= 0) {
+        rhythmEndMode = 'failed';
+        endRhythm();
+        return;
+      }
+    }
+  }
+
+  drawRhythm(now);
+
+  const last = rhythmNotes[rhythmNotes.length - 1];
+  if (now > last.time + 1200) {
+    rhythmEndMode = 'cleared';
+    endRhythm();
+    return;
+  }
+
+  rhythmRaf = requestAnimationFrame(rhythmTick);
+}
+
+function rhythmInput(key) {
+  if (rhythmDone) return;
+  const lane = LANES.findIndex(l => l.key === key);
+  if (lane < 0) return;
+  const now = performance.now() - rhythmStart;
+
+  let best = null;
+  let bestDist = Infinity;
+  for (const n of rhythmNotes) {
+    if (n.hit || n.missed || n.lane !== lane) continue;
+    const dist = Math.abs(n.time - now);
+    if (dist < bestDist) { bestDist = dist; best = n; }
+  }
+
+  if (best && bestDist <= HIT_WINDOW_GOOD) {
+    best.hit = true;
+    rhythmCombo++;
+    rhythmMaxCombo = Math.max(rhythmMaxCombo, rhythmCombo);
+    rhythmMult = Math.min(4, 1 + Math.floor(rhythmCombo / 8));
+    let pts;
+    if (bestDist <= HIT_WINDOW_PERFECT) {
+      pts = 200 * rhythmMult;
+      rhythmEnergy = Math.min(100, rhythmEnergy + 3);
+      showJudgement('PERFECT', '#5cff8c');
+    } else {
+      pts = 100 * rhythmMult;
+      rhythmEnergy = Math.min(100, rhythmEnergy + 1);
+      showJudgement('GOOD', '#4dc3ff');
+    }
+    actualScore += pts;
+    flashLane(lane, true);
+    bumpCombo();
+    updateRhythmHud();
+  } else {
+    flashLane(lane, false);
+    rhythmCombo = 0;
+    rhythmMult  = 1;
+    rhythmEnergy = Math.max(0, rhythmEnergy - 4);
+    updateRhythmHud();
+    if (rhythmEnergy <= 0) {
+      rhythmEndMode = 'failed';
+      endRhythm();
+    }
+  }
+}
+
+function endRhythm() {
+  rhythmDone = true;
+  if (rhythmRaf) { cancelAnimationFrame(rhythmRaf); rhythmRaf = null; }
+  if (rhythmEndMode === 'cleared') {
+    actualScore += 500 + rhythmMaxCombo * 25;
+    showJudgement('CLEAR!', '#5cff8c');
+  } else {
+    showJudgement('FAILED', '#ff5c5c');
+  }
+  updateRhythmHud();
+  setTimeout(startInitials, 1700);
+}
+
+// ----- drawing -----
+function drawRhythm(now) {
+  const canvas = document.getElementById('rhythm-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const hitY  = H - 54;
+  const laneW = W / 4;
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+
+  drawNeonGrid(ctx, W, H, now);
+  drawMarquee(ctx, W, now);
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.lineWidth = 1;
+  for (let i = 1; i < 4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(i * laneW + 0.5, 18);
+    ctx.lineTo(i * laneW + 0.5, H);
+    ctx.stroke();
+  }
+
+  // pulsing hit line
+  const pulse = 0.6 + 0.4 * Math.sin(now / 110);
+  ctx.fillStyle = `rgba(255,255,255,${0.05 * pulse})`;
+  ctx.fillRect(0, hitY - 22, W, 44);
+  ctx.strokeStyle = `rgba(255,255,255,${0.6 * pulse})`;
+  ctx.shadowColor = '#fff';
+  ctx.shadowBlur = 12 * pulse;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, hitY);
+  ctx.lineTo(W, hitY);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  for (let i = 0; i < 4; i++) {
+    drawLaneTarget(ctx, i * laneW + laneW / 2, hitY, i);
+  }
+
+  for (const n of rhythmNotes) {
+    if (n.hit) continue;
+    const dt = n.time - now;
+    if (dt > NOTE_TRAVEL_MS || dt < -300) continue;
+    const progress = 1 - dt / NOTE_TRAVEL_MS;
+    const y = 18 + progress * (hitY - 18);
+    const x = n.lane * laneW + laneW / 2;
+    drawNote(ctx, x, y, n.lane, n.missed);
+  }
+}
+
+function drawNeonGrid(ctx, W, H, now) {
+  const horizonY = H * 0.32;
+
+  const sky = ctx.createLinearGradient(0, 0, 0, horizonY);
+  sky.addColorStop(0, '#0a001f');
+  sky.addColorStop(1, '#28005a');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, horizonY);
+
+  const ground = ctx.createLinearGradient(0, horizonY, 0, H);
+  ground.addColorStop(0, '#28005a');
+  ground.addColorStop(1, '#000');
+  ctx.fillStyle = ground;
+  ctx.fillRect(0, horizonY, W, H - horizonY);
+
+  // sun
+  ctx.fillStyle = '#ff4d8a';
+  ctx.shadowColor = '#ff4d8a';
+  ctx.shadowBlur = 24;
+  ctx.beginPath();
+  ctx.arc(W / 2, horizonY + 4, 26, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#0a001f';
+  for (let i = 0; i < 4; i++) {
+    ctx.fillRect(W / 2 - 28, horizonY - 6 + i * 6, 56, 2);
+  }
+
+  // horizontal perspective lines (animated)
+  const lines = 10;
+  const speed = 0.0008;
+  for (let i = 0; i < lines; i++) {
+    let f = ((i / lines) + (now * speed)) % 1;
+    f = f * f;
+    const y = horizonY + f * (H - horizonY);
+    const alpha = 0.15 + f * 0.55;
+    ctx.strokeStyle = `rgba(180, 80, 255, ${alpha})`;
+    ctx.lineWidth = 0.5 + f * 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+  // vertical perspective lines
+  for (let i = -6; i <= 6; i++) {
+    const xTop = W / 2 + i * 14;
+    const xBot = W / 2 + i * 90;
+    ctx.strokeStyle = 'rgba(180, 80, 255, 0.30)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(xTop, horizonY);
+    ctx.lineTo(xBot, H);
+    ctx.stroke();
+  }
+}
+
+function drawMarquee(ctx, W, now) {
+  const bulbs = 18;
+  for (let i = 0; i < bulbs; i++) {
+    const x = (i + 0.5) * (W / bulbs);
+    const lit = (Math.floor(now / 220) + i) % 3 !== 0;
+    ctx.fillStyle = lit ? '#ffeb55' : '#3a2800';
+    ctx.shadowColor = lit ? '#ffeb55' : 'transparent';
+    ctx.shadowBlur = lit ? 10 : 0;
+    ctx.beginPath();
+    ctx.arc(x, 9, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.shadowBlur = 0;
+}
+
+function drawNote(ctx, x, y, lane, missed) {
+  const L = LANES[lane];
+  const c = missed ? '#444' : L.color;
+  ctx.shadowColor = missed ? 'transparent' : c;
+  ctx.shadowBlur = missed ? 0 : 24;
+  ctx.fillStyle = c;
+  ctx.beginPath();
+  ctx.arc(x, y, 22, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.arc(x, y, 15, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = c;
+  ctx.shadowColor = c;
+  ctx.shadowBlur = missed ? 0 : 6;
+  ctx.font = 'bold 18px "Press Start 2P", monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(L.symbol, x, y + 1);
+  ctx.shadowBlur = 0;
+}
+
+function drawLaneTarget(ctx, x, y, lane) {
+  const L = LANES[lane];
+  const flash = laneFlash[lane] || 0;
+  ctx.strokeStyle = L.color;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = L.color;
+  ctx.shadowBlur = 6 + flash * 22;
+  ctx.beginPath();
+  ctx.arc(x, y, 22, 0, Math.PI * 2);
+  ctx.stroke();
+  if (flash > 0) {
+    ctx.fillStyle = `rgba(255,255,255,${flash * 0.45})`;
+    ctx.beginPath();
+    ctx.arc(x, y, 22, 0, Math.PI * 2);
+    ctx.fill();
+    laneFlash[lane] = Math.max(0, flash - 0.07);
+  }
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = L.color;
+  ctx.font = '11px "Press Start 2P", monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(L.symbol, x, y + 36);
+}
+
+// ============================================================
+// INITIALS INPUT — classic arcade
+// ============================================================
+let initials = ['A', 'A', 'A'];
+let initialPos = 0;
+
+function startInitials() {
+  state = STATES.INITIALS;
+  showScene('initials');
+  initials = ['A', 'A', 'A'];
+  initialPos = 0;
+  renderInitials();
+}
+
+function renderInitials() {
+  const el = document.getElementById('initials-input');
+  el.innerHTML = initials.map((c, i) =>
+    `<div class="initial-slot ${i === initialPos ? 'active' : ''}">${c}</div>`
+  ).join('');
+}
+
+function initialsInput(key) {
+  const A = 'A'.charCodeAt(0);
+  if (key === 'ArrowUp') {
+    let c = initials[initialPos].charCodeAt(0) - A;
+    c = (c + 1) % 26;
+    initials[initialPos] = String.fromCharCode(A + c);
+    renderInitials();
+  } else if (key === 'ArrowDown') {
+    let c = initials[initialPos].charCodeAt(0) - A;
+    c = (c + 25) % 26;
+    initials[initialPos] = String.fromCharCode(A + c);
+    renderInitials();
+  } else if (key === 'ArrowLeft') {
+    initialPos = (initialPos + 2) % 3;
+    renderInitials();
+  } else if (key === 'ArrowRight') {
+    initialPos = (initialPos + 1) % 3;
+    renderInitials();
+  } else if (key === 'Enter' || key === ' ') {
+    showNewHigh();
+  }
+}
+
+// ============================================================
+// NEW HIGH SCORE — the bug:
+// "Scores displayed at the end are entirely dependent on the
+//  numerical placement of those letters in the alphabet."
+// e.g. T(20)P(16)N(14) => 201614
+// ============================================================
+function buggyScore(name) {
+  return name
+    .split('')
+    .map(c => c.charCodeAt(0) - 64)
+    .join('');
+}
+
+function showNewHigh() {
+  state = STATES.NEWHIGH;
+  showScene('newhigh');
+  const name = initials.join('');
+  const displayed = buggyScore(name);
+  document.getElementById('nh-name').textContent = name;
+  document.getElementById('nh-score').textContent = displayed;
+}
+
+// ============================================================
+// INPUT ROUTING — same logic for keyboard arrows and touch swipes
+// ============================================================
+function handleDirection(key) {
+  if (state === STATES.MAZE) {
+    if (key === 'ArrowUp')         { player.nextDx = 0;  player.nextDy = -1; }
+    else if (key === 'ArrowDown')  { player.nextDx = 0;  player.nextDy = 1;  }
+    else if (key === 'ArrowLeft')  { player.nextDx = -1; player.nextDy = 0;  }
+    else if (key === 'ArrowRight') { player.nextDx = 1;  player.nextDy = 0;  }
+  } else if (state === STATES.FIGHT) {
+    rhythmInput(key);
+  } else if (state === STATES.INITIALS) {
+    initialsInput(key);
+  }
+}
+
+function handleConfirm() {
+  if (state === STATES.ATTRACT) {
+    stopAttract();
+    startMaze();
+  } else if (state === STATES.INITIALS) {
+    showNewHigh();
+  } else if (state === STATES.NEWHIGH) {
+    startAttract();
+  }
+}
+
+// ============================================================
+// KEYBOARD
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key) ||
+      e.code === 'Space') {
+    e.preventDefault();
+  }
+
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+      e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    handleDirection(e.key);
+  } else if (e.code === 'Space' || e.key === 'Enter') {
+    handleConfirm();
+  }
+});
+
+// ============================================================
+// TOUCH — swipe = direction, tap = confirm
+// ============================================================
+const SWIPE_MIN = 24;   // pixels — distance to count as swipe
+const TAP_MAX   = 14;   // pixels — under this is a tap
+const TAP_TIME  = 280;  // ms — taps must be quick
+
+let touchStart = null;
+
+function showSwipeFlash(key) {
+  const flash = document.getElementById('swipe-flash');
+  flash.textContent = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→' }[key];
+  flash.classList.remove('show');
+  // force reflow so animation can restart
+  void flash.offsetWidth;
+  flash.classList.add('show');
+}
+
+function setupTouch() {
+  const screen = document.getElementById('screen');
+
+  screen.addEventListener('touchstart', (e) => {
+    const t = e.touches[0];
+    touchStart = { x: t.clientX, y: t.clientY, time: Date.now() };
+  }, { passive: false });
+
+  screen.addEventListener('touchmove', (e) => {
+    // prevent CRT scroll on iOS
+    e.preventDefault();
+  }, { passive: false });
+
+  screen.addEventListener('touchend', (e) => {
+    if (!touchStart) return;
+    const t  = e.changedTouches[0];
+    const dx = t.clientX - touchStart.x;
+    const dy = t.clientY - touchStart.y;
+    const dt = Date.now() - touchStart.time;
+    const ax = Math.abs(dx);
+    const ay = Math.abs(dy);
+    const tapX = t.clientX;
+    touchStart = null;
+    e.preventDefault();
+
+    if (ax < TAP_MAX && ay < TAP_MAX && dt < TAP_TIME) {
+      // In rhythm mode, tap on a lane area hits that lane's note
+      if (state === STATES.FIGHT) {
+        const canvas = document.getElementById('rhythm-canvas');
+        const rect = canvas.getBoundingClientRect();
+        const localX = tapX - rect.left;
+        if (localX >= 0 && localX <= rect.width) {
+          const lane = Math.max(0, Math.min(3, Math.floor((localX / rect.width) * 4)));
+          rhythmInput(LANES[lane].key);
+          return;
+        }
+      }
+      handleConfirm();
+      return;
+    }
+    if (ax < SWIPE_MIN && ay < SWIPE_MIN) return;
+
+    let key;
+    if (ax > ay) key = dx > 0 ? 'ArrowRight' : 'ArrowLeft';
+    else         key = dy > 0 ? 'ArrowDown'  : 'ArrowUp';
+
+    handleDirection(key);
+    showSwipeFlash(key);
+  }, { passive: false });
+
+  screen.addEventListener('contextmenu', (e) => e.preventDefault());
+}
+
+// ============================================================
+// RESPONSIVE SCALING — fit cabinet to any viewport
+// ============================================================
+function fitToViewport() {
+  const wrap = document.getElementById('cabinet-wrap');
+  const cabinet = wrap.querySelector('.cabinet');
+  const naturalW = cabinet.offsetWidth;
+  const naturalH = cabinet.offsetHeight;
+  if (!naturalW || !naturalH) return;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  // 0.94 leaves a small breathing margin
+  const scale = Math.min(vw / naturalW, vh / naturalH, 1) * 0.94;
+  wrap.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+
+window.addEventListener('resize', fitToViewport);
+window.addEventListener('orientationchange', () => {
+  // orientationchange fires before layout updates — wait a tick
+  setTimeout(fitToViewport, 100);
+});
+
+// ============================================================
+// BOOT
+// ============================================================
+setupTouch();
+startAttract();
+// scale after fonts load (cabinet size depends on text metrics)
+window.addEventListener('load', fitToViewport);
+fitToViewport();
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(fitToViewport);
+}
+</script>
+
+</body>
+</html>
