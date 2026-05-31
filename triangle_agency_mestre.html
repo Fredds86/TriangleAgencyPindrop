@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triangle Agency — Manual do Diretor (GM)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d0f;
+    --bg2: #111518;
+    --bg3: #181e22;
+    --card: #1a2026;
+    --border: #2a3540;
+    --border2: #3a4a55;
+    --accent: #00e5a0;
+    --accent2: #00b87e;
+    --accent3: #005c40;
+    --warn: #f5c842;
+    --warn2: #7a6010;
+    --danger: #e84545;
+    --text: #e8eff5;
+    --text2: #8ba3b5;
+    --text3: #4a6070;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --head: 'Space Grotesk', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(10,13,15,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 2rem;
+    height: 52px;
+    overflow-x: auto;
+  }
+
+  nav .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-right: 2rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  nav a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 12px;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    padding: 0 1rem;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  nav a:hover, nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* LAYOUT */
+  .content {
+    margin-top: 52px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 4rem 0 3rem;
+  }
+  .hero .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    background: rgba(0,229,160,0.08);
+    border: 1px solid rgba(0,229,160,0.3);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: var(--head);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero .sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+  }
+  .hero .desc {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 580px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .hero-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .hero-tile:hover {
+    border-color: var(--accent2);
+    background: #1f2c34;
+  }
+  .hero-tile .icon {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+  }
+  .hero-tile h3 {
+    font-family: var(--head);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .hero-tile p {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* SECTION TITLES */
+  .sec-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sec-header .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .sec-header h2 {
+    font-family: var(--head);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .sec-header p {
+    color: var(--text2);
+    margin-top: 0.5rem;
+    font-size: 15px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card.accent { border-left: 3px solid var(--accent); }
+  .card.warn { border-left: 3px solid var(--warn); }
+  .card.danger { border-left: 3px solid var(--danger); }
+  .card h3 {
+    font-family: var(--head);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .card p { color: var(--text2); font-size: 14px; }
+
+  /* TWO COL */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 0.5rem;
+  }
+  .badge.green { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.3); }
+  .badge.yellow { background: rgba(245,200,66,0.1); color: var(--warn); border: 1px solid rgba(245,200,66,0.3); }
+  .badge.red { background: rgba(232,69,69,0.1); color: var(--danger); border: 1px solid rgba(232,69,69,0.3); }
+  .badge.blue { background: rgba(60,140,230,0.1); color: #60a8ef; border: 1px solid rgba(60,140,230,0.3); }
+  .badge.purple { background: rgba(160,100,240,0.1); color: #c080f0; border: 1px solid rgba(160,100,240,0.3); }
+
+  /* STEPS */
+  .steps { margin: 1.5rem 0; }
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    background: rgba(0,229,160,0.12);
+    border: 1px solid rgba(0,229,160,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .step-body h4 {
+    font-family: var(--head);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .step-body p { font-size: 13px; color: var(--text2); }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--text); }
+  .num-cell { font-family: var(--mono); color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .num-cell.warn { color: var(--warn); }
+  .num-cell.red { color: var(--danger); }
+
+  /* INFO BOX */
+  .infobox {
+    display: flex;
+    gap: 1rem;
+    background: rgba(0,229,160,0.05);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    align-items: flex-start;
+  }
+  .infobox .ico { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .infobox p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .infobox p strong { color: var(--accent); }
+
+  .warnbox {
+    display: flex;
+    gap: 1rem;
+    background: rgba(245,200,66,0.05);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    align-items: flex-start;
+  }
+  .warnbox .ico { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .warnbox p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .warnbox p strong { color: var(--warn); }
+
+  .dangerbox {
+    display: flex;
+    gap: 1rem;
+    background: rgba(232,69,69,0.05);
+    border: 1px solid rgba(232,69,69,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    align-items: flex-start;
+  }
+  .dangerbox .ico { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .dangerbox p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .dangerbox p strong { color: var(--danger); }
+
+  /* ACCORDION */
+  .accord { margin-bottom: 0.5rem; }
+  .accord-head {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s;
+    font-family: var(--head);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .accord-head:hover { border-color: var(--accent2); }
+  .accord-body {
+    display: none;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+  .accord-body ul { padding-left: 1.25rem; }
+  .accord-body li { margin-bottom: 0.4rem; }
+  .accord.open .accord-head { border-radius: 8px 8px 0 0; border-color: var(--accent2); }
+  .accord.open .accord-body { display: block; }
+  .accord-arr { color: var(--text3); font-size: 12px; transition: transform 0.2s; }
+  .accord.open .accord-arr { transform: rotate(180deg); }
+
+  /* MISSION FLOW */
+  .mission-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .mf-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    position: relative;
+  }
+  .mf-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .mf-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  .mf-vert {
+    width: 2px;
+    flex: 1;
+    min-height: 40px;
+    background: var(--border);
+  }
+  .mf-last .mf-vert { display: none; }
+  .mf-body {
+    padding-bottom: 2rem;
+  }
+  .mf-body h4 {
+    font-family: var(--head);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+  }
+  .mf-body p { font-size: 13px; color: var(--text2); }
+
+  /* CHECKLIST */
+  .check-list { list-style: none; padding: 0; margin: 0.5rem 0; }
+  .check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.4rem 0;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+  .check-list li:last-child { border-bottom: none; }
+  .check-list li::before {
+    content: '▢';
+    color: var(--accent);
+    font-family: var(--mono);
+    flex-shrink: 0;
+  }
+  .check-list li strong { color: var(--text); }
+
+  /* PILL TAGS */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0; }
+  .tagchip {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    color: var(--text2);
+  }
+
+  /* DICE MINI */
+  .die {
+    display: inline-flex;
+    width: 30px; height: 30px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 2px;
+  }
+  .die.three { background: rgba(0,229,160,0.15); border-color: var(--accent2); color: var(--accent); }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr; }
+    nav a { padding: 0 0.6rem; font-size: 11px; }
+    .hero h1 { font-size: 2rem; }
+  }
+
+  .mono { font-family: var(--mono); }
+  .text-accent { color: var(--accent); }
+  .text-warn { color: var(--warn); }
+  .text-danger { color: var(--danger); }
+  .text-muted { color: var(--text2); }
+  .mt1 { margin-top: 1rem; }
+  .mt2 { margin-top: 2rem; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">▲ DIRETOR — TRIANGLE AGENCY</div>
+  <a href="#" class="active" data-sec="home">Início</a>
+  <a href="#" data-sec="sessao">Fluxo da Sessão</a>
+  <a href="#" data-sec="anomalia">A Anomalia</a>
+  <a href="#" data-sec="chaos">Chaos</a>
+  <a href="#" data-sec="minor">Minor Anomalies</a>
+  <a href="#" data-sec="tabelas">Tabelas</a>
+  <a href="#" data-sec="telas">Cheat Sheet</a>
+</nav>
+
+<div class="content">
+
+<!-- HOME -->
+<div class="section active" id="home">
+  <div class="hero">
+    <div class="tag">DOCUMENTO INTERNO — APENAS PARA O DIRETOR</div>
+    <h1>Manual do <span>Diretor</span></h1>
+    <p class="sub">RUN THE AGENCY. BREAK THE WORLD. CLEAN IT UP.</p>
+    <p class="desc">Tudo que você precisa para mestrar Triangle Agency em uma página: o fluxo de cada sessão, como construir e conduzir Anomalias, o Chaos Pool, e todas as tabelas de referência rápida. Mantenha aberto durante o jogo.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>🎬 Seu trabalho em uma frase</h3>
+    <p style="font-size:14px">Você não é o adversário dos Agentes — você é o <strong style="color:var(--text)">mundo</strong>. Apresente a Anomalia, descreva o que ela faz, e deixe o Chaos que os próprios Agentes geram virar o motor da pressão. Falha é assumida: o jogo só fica perigoso quando os jogadores usam (e abusam) dos seus poderes.</p>
+  </div>
+
+  <div class="three-col mt1">
+    <div class="card accent">
+      <h3>1 · Apresente o mundo</h3>
+      <p style="font-size:13px">Narre cenas, NPCs e pistas. Nunca peça rolagens de skill — se é relevante, você conta. Os Agentes decidem como intervir.</p>
+    </div>
+    <div class="card accent">
+      <h3>2 · Conduza a Anomalia</h3>
+      <p style="font-size:13px">A Anomalia persegue seu Focus da forma mais simples possível. Você a interpreta, e gasta Chaos para ela agir contra os Agentes.</p>
+    </div>
+    <div class="card accent">
+      <h3>3 · Cobre as consequências</h3>
+      <p style="font-size:13px">Mistakes geram Chaos. Chaos vira Chaos Effects e Minor Anomalies. Loose Ends não resolvidas voltam para assombrar a próxima missão.</p>
+    </div>
+  </div>
+
+  <div class="hero-grid mt2">
+    <div class="hero-tile" onclick="go('sessao')">
+      <div class="icon">🕗</div>
+      <h3>Fluxo da Sessão</h3>
+      <p>Morning Meetings → Investigation → Encounter, com gatilhos para o GM</p>
+    </div>
+    <div class="hero-tile" onclick="go('anomalia')">
+      <div class="icon">🔺</div>
+      <h3>A Anomalia</h3>
+      <p>Focus, Domain, comportamento e as 3 formas de captura</p>
+    </div>
+    <div class="hero-tile" onclick="go('chaos')">
+      <div class="icon">🌀</div>
+      <h3>Chaos Pool</h3>
+      <p>Como gera, como gasta, Chaos Effects e Manifestação</p>
+    </div>
+    <div class="hero-tile" onclick="go('minor')">
+      <div class="icon">🐛</div>
+      <h3>Minor Anomalies</h3>
+      <p>Os 6 tipos com Threat e Stability, e como elas crescem</p>
+    </div>
+    <div class="hero-tile" onclick="go('tabelas')">
+      <div class="icon">📊</div>
+      <h3>Tabelas</h3>
+      <p>Harm, Loose Ends, resultados, Commendations & Demerits, dados</p>
+    </div>
+    <div class="hero-tile" onclick="go('telas')">
+      <div class="icon">🗂️</div>
+      <h3>Cheat Sheet</h3>
+      <p>Resumo de uma tela + checklist de prep e Content Control</p>
+    </div>
+  </div>
+
+  <div class="infobox mt2">
+    <div class="ico">ℹ️</div>
+    <p>Conteúdo extraído do livro <em>Triangle Agency</em> (Haunted Table, 2024) — capítulos de regras e o capítulo 09 (Chaos, Chaos Effects, Minor Anomalies). Os custos altos do Chaos Effects Chart (10/30) seguem a notação do livro; ajuste ao seu gosto, como o próprio manual incentiva.</p>
+  </div>
+</div>
+
+<!-- FLUXO DA SESSÃO -->
+<div class="section" id="sessao">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 01 — CONDUZINDO A SESSÃO</div>
+    <h2>Fluxo da Sessão</h2>
+    <p>Cada missão tem 3 fases. Sempre há uma Anomalia a ser contida e um Domain a ser invadido.</p>
+  </div>
+
+  <div class="mission-flow">
+    <div class="mf-item">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge green">FASE 1</div>
+        <h4>Morning Meetings — O dia começa</h4>
+        <p>Abra com cenas do cotidiano dos Agentes antes da missão: vida pessoal, escritório, NPCs e Relationships. Use este momento para tocar Reality Triggers de leve e estabelecer tom. Depois, chame-os para o <strong style="color:var(--text)">briefing</strong>: apresente a missão, a área afetada e o equipamento padrão.</p>
+      </div>
+    </div>
+    <div class="mf-item">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge yellow">FASE 2</div>
+        <h4>Investigation — Seguindo as pistas</h4>
+        <p>Apresente leads. Os Agentes investigam, conversam, e seguem o rastro até o <strong style="color:var(--warn)">Domain</strong>. Aqui é onde nascem os primeiros Mistakes — e portanto o primeiro Chaos. Cada testemunha ou evidência mal resolvida vira uma <strong style="color:var(--warn)">Loose End</strong>. Deixe os Agentes reduzirem Loose Ends ao longo do caminho.</p>
+      </div>
+    </div>
+    <div class="mf-item mf-last">
+      <div class="mf-line"><div class="mf-dot"></div><div class="mf-vert"></div></div>
+      <div class="mf-body">
+        <div class="badge red">FASE 3</div>
+        <h4>Encounter — Dentro do Domain</h4>
+        <p>Os Agentes enfrentam a Anomalia em seu território, onde ela é mais forte. Gaste Chaos livremente aqui para criar pressão. O objetivo deles: deixá-la <em>exausta, calma ou disposta</em> e capturá-la na Normal Briefcase — ou neutralizá-la com a Ripple Gun. Feche com o <strong style="color:var(--text)">Mission Report</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Quando os Agentes rolam (e o que VOCÊ faz)</h3>
+
+  <div class="card">
+    <p style="margin-bottom:0.75rem">Você nunca pede uma rolagem de skill. Os Agentes só rolam 6d4 por <strong style="color:var(--text)">escolha própria</strong>, em dois casos: <strong style="color:var(--accent)">Ask The Agency</strong> ou uma <strong style="color:var(--accent)">Anomaly Ability</strong>. Seu papel na rolagem:</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Defina a Quality relevante</h4><p>Você tem a palavra final sobre qual Quality se aplica. A Causality Chain do jogador pode influenciar isso.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Conte os 3s</h4><p>≥1 três = sucesso. Exatamente 3 três = <span class="text-warn">Triscendência</span> (sucesso sem gerar Chaos + bônus). 0 três = falha.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Colha o Chaos</h4><p>Em falha (0 três), cada dado que não é 3 entra no Chaos Pool. Em Burnout, +1 Chaos. <strong style="color:var(--text)">É aqui que o Pool cresce.</strong></p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Narre a consequência</h4><p>Descreva o efeito da ação, as Loose Ends criadas, e como a Anomalia reage.</p></div></div>
+    </div>
+  </div>
+
+  <div class="infobox">
+    <div class="ico">💡</div>
+    <p><strong>Failure is Assumed.</strong> Ação mundana arriscada de pessoa comum (escalar muro, vencer luta, convencer sem argumento) simplesmente <strong>falha</strong> — sem dados. Não dramatize: "não dá". Isso empurra os jogadores a usar Ask The Agency e poderes, que é o que move o Chaos.</p>
+  </div>
+
+  <div class="warnbox">
+    <div class="ico">🩸</div>
+    <p><strong>Sem combate estruturado.</strong> Sem iniciativa, turnos ou HP. Quando algo fica letal, você <strong>descreve a ameaça e atribui Harm</strong> ("a Anomalia joga um carro: 2 Harm"). O Agente responde com Ask The Agency, um poder, ou absorve gastando QAs da Life Insurance Policy.</p>
+  </div>
+</div>
+
+<!-- A ANOMALIA -->
+<div class="section" id="anomalia">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 02 — O ANTAGONISTA</div>
+    <h2>A Anomalia</h2>
+    <p>Toda missão gira em torno de uma. Ela não é "um monstro" — é um sentimento que ganhou poder.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card accent">
+      <h3>Focus</h3>
+      <p>Um <strong style="color:var(--text)">sentimento + assunto</strong> que originou a Anomalia. Ela tenta replicar esse sentimento no mundo, da forma mais direta possível. Ex: <em>"Amor por esta velha árvore"</em> → flores hipnóticas que forçam amor em quem as vê.</p>
+    </div>
+    <div class="card accent">
+      <h3>Domain</h3>
+      <p>O lugar onde a Anomalia entrou na Realidade e onde é <strong style="color:var(--text)">mais poderosa</strong> — geralmente onde seu Focus é mais intenso. O Encounter acontece aqui. Com Chaos, o Domain pode mudar de forma ou se manifestar ao redor dos Agentes.</p>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">Construindo a Anomalia da missão</h3>
+  <div class="card">
+    <ul class="check-list">
+      <li><strong>Focus:</strong> escolha sentimento + assunto. É a alma da missão.</li>
+      <li><strong>Domain:</strong> onde ela está enraizada? Como o lugar reflete o Focus?</li>
+      <li><strong>Elements:</strong> de quais Elementos seus efeitos são feitos? (veja a tabela em Minor Anomalies)</li>
+      <li><strong>Minor Anomalies:</strong> que pequenas Anomalias ela cria, e quais tipos favorece?</li>
+      <li><strong>Comportamento:</strong> como ela "pensa"? O que a satisfaz, confunde, ou desespera?</li>
+      <li><strong>Loose Ends prováveis:</strong> que rastro ela já deixou no mundo antes dos Agentes chegarem?</li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">As 3 formas de capturar</h3>
+  <p class="text-muted" style="font-size:14px;margin-bottom:1rem">A Normal Briefcase só funciona se a Anomalia estiver <strong class="text-accent">exausta, calma ou disposta</strong>. Há três caminhos — cada um deixa a Anomalia em um estado emocional:</p>
+
+  <table>
+    <thead><tr><th>Caminho</th><th>O que os Agentes fazem</th><th>Estado resultante</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Satisfazer</strong></td><td>Satisfazer temporariamente o Focus da Anomalia</td><td><span class="text-accent">Satisfação / contentamento</span></td></tr>
+      <tr><td><strong>Confundir</strong></td><td>Convencê-la de que suas ações são contraproducentes</td><td><span class="text-warn">Confusão</span></td></tr>
+      <tr><td><strong>Remover</strong></td><td>Remover a fonte do seu Focus</td><td><span class="text-danger">Desespero</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="two-col mt1">
+    <div class="card">
+      <div class="badge green">NORMAL BRIEFCASE</div>
+      <p style="font-size:13px">Captura e contém qualquer Anomalia de qualquer tamanho — desde que exausta, calma ou disposta. É o resultado ideal (+Commendations).</p>
+    </div>
+    <div class="card">
+      <div class="badge red">RIPPLE GUN</div>
+      <p style="font-size:13px">Desintegra a Anomalia permanentemente. 1 carga, só na Anomalia-alvo. Usar em outro alvo = <strong class="text-danger">3 Demerits</strong>. Resultado "Neutralized": sem ganho, sem perda.</p>
+    </div>
+  </div>
+
+  <div class="dangerbox">
+    <div class="ico">🔻</div>
+    <p><strong>Major Anomaly.</strong> A Anomalia central da missão pode usar habilidades poderosas quando você gasta Chaos (ver tabela de Chaos Effects). Trate-a como uma força que reage à pressão dos Agentes, não como um saco de pancada com HP.</p>
+  </div>
+</div>
+
+<!-- CHAOS -->
+<div class="section" id="chaos">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 03 — CAPÍTULO 09: CHAOS</div>
+    <h2>O Chaos Pool</h2>
+    <p>O motor de pressão do jogo. Representa a tendência dos Agentes de piorar as coisas — e a chance de tudo dar errado na pior hora.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>Regra de ouro</h3>
+    <p>O Chaos Pool <strong style="color:var(--text)">começa cada Missão em 0 dados</strong> e cresce conforme os Agentes cometem Mistakes. Você gasta Chaos para ativar <strong style="color:var(--text)">Chaos Effects</strong>. Chaos não gasto desaparece no fim da missão.</p>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">Como o Chaos é gerado</h3>
+  <table>
+    <thead><tr><th>Gatilho</th><th>Chaos adicionado</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Rolagem falha</strong> (0 três)</td><td>Cada dado que não for 3 entra no Pool (até 6)</td></tr>
+      <tr><td><strong>Burnout</strong> (usar Quality com 0 QAs)</td><td>+1 Chaos, e o Agente remove um 3 da rolagem</td></tr>
+      <tr><td><strong>Loose End</strong> não resolvida</td><td>Adiciona Chaos na próxima missão em que aparecer</td></tr>
+    </tbody>
+  </table>
+  <div class="infobox">
+    <div class="ico">✦</div>
+    <p><strong>Triscendência cancela o Chaos.</strong> Quando um Agente tira exatamente três 3s, a rolagem não gera Chaos algum — além de dar um bônus a ele. Premie jogadas espertas que evitam alimentar o Pool.</p>
+  </div>
+
+  <div class="infobox">
+    <div class="ico">📋</div>
+    <p>O total de Chaos é <strong>sempre conhecimento público</strong> e fica anotado no Mission Report. A Anomalia <strong>não pode agir perto dos Agentes sem gastar Chaos</strong> — por isso o Pool é literalmente o "orçamento" dela.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Chaos Effects Chart — gastando o Pool</h3>
+  <p class="text-muted" style="font-size:14px;margin-bottom:0.5rem">Você gasta Chaos para a Anomalia agir. Leia a descrição inteira em voz alta para os Agentes — é mais dramático. Custos vêm em unidades de 1, 5, 10, 30; avisar que <strong>10 e 30 são grandes</strong> é divertido.</p>
+  <table>
+    <thead><tr><th>Custo</th><th>Efeito</th><th>O que faz / exemplo</th></tr></thead>
+    <tbody>
+      <tr><td class="num-cell">1</td><td><strong>Distort</strong></td><td>Um objeto/local muda de forma mundana. <em>Porta tranca; câmera liga; rosas viram tulipas; seu casaco favorito agora é verde.</em></td></tr>
+      <tr><td class="num-cell">2</td><td><strong>Corrupt</strong></td><td>Objeto/local passa a refletir a Anomalia — aparência anormal ou mudança perigosa. <em>A porta abre para um poço; a filmagem mostra o sujeito morto; olhos brotam nas rosas; o casaco agora é pele.</em></td></tr>
+      <tr><td class="num-cell">3</td><td><strong>Reality Trigger</strong></td><td>Ativa o Reality de um Agente. <em>O Overbooked recebe uma ligação; o Star encontra um fã; o Dependent do Caretaker está com fome.</em></td></tr>
+      <tr><td class="num-cell">4</td><td><strong>Manifest</strong></td><td>Crie 1 Minor Anomaly (use os tipos abaixo). <em>Uma Thieving rouba um keycard importante.</em></td></tr>
+      <tr><td class="num-cell">5</td><td><strong>Attract</strong></td><td>Alguns seres mundanos (como Relationships) são atraídos para o Domain. <em>Um ônibus desvia a rota; um repórter tem um palpite; a polícia abandona a barricada.</em></td></tr>
+      <tr><td class="num-cell warn">10</td><td><strong>Expand</strong></td><td>O Domain cresce, trazendo outro local sob seu poder (escritório → prédio → quarteirão → cidade).</td></tr>
+      <tr><td class="num-cell warn">10</td><td><strong>Double</strong></td><td>Crie 2 Minor Anomalies de uma vez.</td></tr>
+      <tr><td class="num-cell warn">10</td><td><strong>Displace</strong></td><td>Reposiciona/teleporta alvos ou objetos dentro do alcance da Anomalia.</td></tr>
+      <tr><td class="num-cell red">30</td><td><strong>Triple</strong></td><td>Crie 3 Minor Anomalies. <em>Cada Agente vê seu maior medo; humanos recebem seu desejo mais profundo; a Anomalia declara sua intenção.</em></td></tr>
+      <tr><td class="num-cell red">30</td><td><strong>Kill</strong></td><td>Uma vida mundana termina, ignorando defesas. Não pode ser parado, alterado ou interrompido por nenhum outro efeito.</td></tr>
+      <tr><td class="num-cell red">30</td><td><strong>Overwhelm</strong></td><td>Uma vida Anômala (um Agente) termina, ignorando defesas — salvo se algo especificar o contrário.</td></tr>
+    </tbody>
+  </table>
+  <div class="infobox">
+    <div class="ico">♾️</div>
+    <p>Dentro do próprio <strong>Domain</strong>, qualquer efeito de custo <strong>menor que 3</strong> é usável <strong>infinitamente</strong> — não precisa pagar Chaos. Personalize a lista antes da missão: pense em como a Corrupção dessa Anomalia se parece e que Minor Anomalies ela favorece.</p>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:1rem;">Conduzindo cenas de pressão</h3>
+  <div class="card">
+    <p style="margin-bottom:0.75rem">Sob ataque, seu objetivo é <strong style="color:var(--text)">fazê-los rolar</strong> — cada rolagem gera mais Chaos. O ciclo recomendado pelo livro:</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>A Anomalia ataca um alvo</h4><p>Dê ao alvo a chance de lidar com o ataque (rolar). Se falhar, aplique o Harm.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>O time faz um movimento proativo</h4><p>Depois do ataque, o resto da equipe pode reagir (mais uma rolagem).</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Se o perigo persiste, escolhe novo alvo</h4><p>Rotacione pelo grupo, um de cada vez. Não se prenda a "ordem de turno" — deixe a história fluir.</p></div></div>
+    </div>
+    <div class="warnbox" style="margin:0.75rem 0 0">
+      <div class="ico">🥊</div>
+      <p><strong>Vencer pela força ("quantas vezes eu bato nisso?"):</strong> um golpe direto de uma Anomalia média = <strong>3 Harm</strong>. Para exaurir uma Anomalia pela força, os Agentes precisam causar entre <strong>7 e 18 Harm</strong>. Se eles montaram um plano genial, não segure a vitória; se estão usando habilidades que causam Harm fixo, estique o vai-e-vem para drenar os recursos deles.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MINOR ANOMALIES -->
+<div class="section" id="minor">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 04 — CAPÍTULO 09: MINOR ANOMALIES</div>
+    <h2>Minor Anomalies</h2>
+    <p>Anomalias fracas demais para criar um Agente. Têm Focus, mas são instáveis e perseguem-no da forma mais simples.</p>
+  </div>
+
+  <div class="card accent">
+    <h3>O que são</h3>
+    <p>Uma Minor Anomaly é um ser irreal <strong style="color:var(--text)">sem Domain e sem Focus</strong> — flexível e sem propósito próprio. Anomalias maiores gastam Chaos para recrutá-las e estender seu alcance. Elas aprisionam Agentes, atraem alvos para o perigo, e até aumentam o Chaos gerado ao redor. Os Agentes se livram delas de muitas formas criativas, mas a mais fácil é <strong>destruí-las com força física</strong>.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card"><h3>Threat</h3><p>Quanto Harm a Minor Anomaly causa em <strong style="color:var(--text)">um ataque</strong>, quando tenta.</p></div>
+    <div class="card"><h3>Stability</h3><p>Quanto Harm precisa ser causado a ela antes de ficar <strong style="color:var(--text)">exausta</strong> (e poder ser contida/destruída).</p></div>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">Minor Anomaly Creation Chart — os 6 tipos</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Threat</th><th>Stab.</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Violent</strong></td><td class="num-cell red">2</td><td class="num-cell">1</td><td>Habita objetos físicos para causar dano (corda que estrangula, pedra em alta velocidade, tesoura ameaçadora). Evitar o Harm quase sempre exige rolagem ou habilidade. Pode matar humanos mundanos em massa.</td></tr>
+      <tr><td><strong>Alluring</strong></td><td class="num-cell">0</td><td class="num-cell">2</td><td>Visualmente ou psicologicamente hipnótica (algo atraente, uma música linda, algo simétrico e girando). Junta multidões de humanos hipnotizados; perigosíssima junto de uma Violent. Falha de Agente próximo pode levar ao controle dele.</td></tr>
+      <tr><td><strong>Imprisoning</strong></td><td class="num-cell">0</td><td class="num-cell">3</td><td>Altera o espaço (real ou surreal) para prender alvos. Pode aprisionar até <em>sem</em> uma falha. Escapar ou resgatar alguém exige uso criativo de habilidades.</td></tr>
+      <tr><td><strong>Thieving</strong></td><td class="num-cell">1</td><td class="num-cell">2</td><td>Rouba objetos importantes automaticamente e é quase impossível de pegar. Só ataca quando você tenta recuperar o que foi levado. Objetos roubados dão pistas do Focus da Anomalia.</td></tr>
+      <tr><td><strong>Impersonating</strong></td><td class="num-cell">1</td><td class="num-cell">2</td><td>Sofisticada o bastante para imitar humanos específicos. Cria muitas Loose Ends se não for descoberta; Anomalias espertas as usam como "embaixadoras" no mundo mundano.</td></tr>
+      <tr><td><strong>Disruptive</strong></td><td class="num-cell">1</td><td class="num-cell">1</td><td>Amplia o Chaos: para cada uma por perto, <strong>+1</strong> a cada vez que Chaos é criado. Adora se esconder como objeto mundano — às vezes o único sinal é o Chaos subindo. Resonants a identificam pelo toque; ao ser destruída, explode (1 Harm).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="infobox">
+    <div class="ico">🌱</div>
+    <p><strong>Ameaça de longo prazo:</strong> se deixadas sem monitoramento, Minor Anomalies podem <strong>desenvolver o próprio Focus e Domain</strong> e virar Anomalias completas. É comum sobrarem após a captura ou morte de sua criadora — ótimo jeito de relembrar missões passadas e gerar continuidade de campanha.</p>
+  </div>
+</div>
+
+<!-- TABELAS -->
+<div class="section" id="tabelas">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 05 — REFERÊNCIA RÁPIDA</div>
+    <h2>Tabelas</h2>
+    <p>Tudo que você vai consultar no meio da sessão, em um lugar só.</p>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:0.5rem;">🎲 Rolagem 6d4 — leitura rápida</h3>
+  <table>
+    <thead><tr><th>Resultado</th><th>Significado</th><th>Chaos gerado</th></tr></thead>
+    <tbody>
+      <tr><td><span class="die three">3</span>×3 exatos</td><td><span class="text-warn">Triscendência</span> — sucesso + bônus</td><td>Nenhum (cancelado)</td></tr>
+      <tr><td>1+ três</td><td><span class="text-accent">Sucesso</span></td><td>Nenhum (só falha gera)</td></tr>
+      <tr><td>0 três</td><td><span class="text-danger">Falha</span></td><td>Todos os 6 dados → Pool</td></tr>
+      <tr><td>Burnout (0 QAs)</td><td>Remove um 3 da rolagem</td><td>+1 Chaos</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:0.5rem;">🩸 Harm</h3>
+  <div class="card">
+    <p style="font-size:13px;margin-bottom:0.5rem">Não existe HP. Quando algo pode causar ferimento grave ou morte, você narra e atribui um valor de <strong style="color:var(--text)">Harm</strong>. A quantidade mede o quão extrema e <em>anômala</em> é a força — e portanto quantas Loose Ends ela cria se houver testemunha.</p>
+    <table>
+      <thead><tr><th>Harm</th><th>O que significa</th></tr></thead>
+      <tbody>
+        <tr><td class="num-cell">1</td><td>Mata um humano comum. Pode parecer causa mundana — poucas/nenhuma Loose End.</td></tr>
+        <tr><td class="num-cell warn">2</td><td>Deixa marca claramente Anômala. Mais dramático = mais Loose Ends.</td></tr>
+        <tr><td class="num-cell red">3+</td><td>Cada vez mais extremo e impossível de disfarçar.</td></tr>
+      </tbody>
+    </table>
+    <div class="warnbox" style="margin:0.75rem 0 0">
+      <div class="ico">🛡️</div>
+      <p><strong>Life Insurance — Benefício 1:</strong> ao receber Harm, o Agente gasta automaticamente <strong>1 QA por ponto de Harm</strong> para ignorar o efeito (o golpe acontece visivelmente, mas não o machuca). Se ele não tem QAs sobrando em nenhuma Quality, ou opta por não usar — <strong class="text-danger">ele morre</strong>.</p>
+    </div>
+    <div class="dangerbox" style="margin:0.75rem 0 0">
+      <div class="ico">💀</div>
+      <p><strong>Benefício 2 (morte):</strong> ressuscitar custa <strong class="text-danger">-5 Commendations</strong>. Se isso joga o total abaixo de zero, o Agente entra em <em>Commendation Debt</em> (e na Shoelace Initiative) até voltar a zero.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:0.5rem;">⚠️ Loose Ends</h3>
+  <table>
+    <thead><tr><th>O que é</th><th>Consequência</th><th>Como resolver</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Testemunha</strong></td><td rowspan="4">Cada Loose End não resolvida gera Chaos na próxima missão e abaixa a pontuação dos Agentes</td><td>Convencer que "tudo está normal"</td></tr>
+      <tr><td><strong>Filmagem / câmera</strong></td><td>Apagar / interceptar a evidência</td></tr>
+      <tr><td><strong>Evidência física</strong></td><td>Destruir ou recolher</td></tr>
+      <tr><td><strong>Propriedade danificada</strong></td><td>Usar recursos da Agency para encobrir</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:0.5rem;">🏁 Resultados da Missão</h3>
+  <div class="three-col">
+    <div class="card"><div class="badge green">CAPTURED</div><p style="font-size:13px;color:var(--text)">+3 Commendations para cada Agente</p></div>
+    <div class="card"><div class="badge blue">NEUTRALIZED</div><p style="font-size:13px;color:var(--text)">Sem Commendations, sem Demerits</p></div>
+    <div class="card"><div class="badge red">ESCAPED</div><p style="font-size:13px;color:var(--text)">-3 Demerits para cada Agente</p></div>
+  </div>
+
+  <hr>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin-bottom:0.5rem;">⭐ Commendations & Demerits</h3>
+  <table>
+    <thead><tr><th>Evento</th><th>Efeito</th></tr></thead>
+    <tbody>
+      <tr><td>Anomalia capturada</td><td class="num-cell">+3 cada</td></tr>
+      <tr><td>Mission Report exemplar</td><td class="num-cell">+6 todos</td></tr>
+      <tr><td>MVP da missão</td><td class="num-cell">+ (varia)</td></tr>
+      <tr><td>Anomalia escapou</td><td class="num-cell red">-3 cada</td></tr>
+      <tr><td>Ripple Gun no alvo errado</td><td class="num-cell red">-3</td></tr>
+      <tr><td>Uso de poderes fora do trabalho</td><td class="num-cell red">Demerits (varia)</td></tr>
+      <tr><td>Recuperar de uma morte</td><td class="num-cell red">-5</td></tr>
+    </tbody>
+  </table>
+  <div class="infobox">
+    <div class="ico">💰</div>
+    <p>Commendations são a moeda de tudo: comprar <strong>Requisitions</strong> (ferramentas/gadgets), pagar o MVP, e recuperar de mortes. Não há XP nem nível — a progressão vem de Playwalled Documents e do Work/Life Balance.</p>
+  </div>
+</div>
+
+<!-- CHEAT SHEET / TELAS -->
+<div class="section" id="telas">
+  <div class="sec-header">
+    <div class="label">SEÇÃO 06 — TELA DO DIRETOR</div>
+    <h2>Cheat Sheet</h2>
+    <p>O resumo de uma tela, o checklist de preparação, e a conversa de Content Control.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>🗂️ Resumo de uma tela</h3>
+    <div class="two-col mt1">
+      <div>
+        <p style="font-size:12px;color:var(--text2);line-height:1.9">
+          <strong style="color:var(--text)">Fluxo:</strong> Morning Meetings → Investigation → Encounter → Mission Report.<br>
+          <strong style="color:var(--text)">Você nunca pede rolagem.</strong> Agentes rolam 6d4 só em Ask The Agency / Anomaly Ability.<br>
+          <strong style="color:var(--text)">3s:</strong> ≥1 = sucesso · exatos 3 = Triscendência (s/ Chaos) · 0 = falha (6 ao Pool).<br>
+          <strong style="color:var(--text)">Falha é assumida.</strong> Ação mundana arriscada de pessoa comum: simplesmente falha.
+        </p>
+      </div>
+      <div>
+        <p style="font-size:12px;color:var(--text2);line-height:1.9">
+          <strong style="color:var(--text)">Chaos:</strong> 0 no início · cada dado ≠3 numa falha entra no Pool · zera no fim.<br>
+          <strong style="color:var(--text)">Effects:</strong> 1 Distort · 2 Corrupt · 3 Reality Trigger · 4 Manifest · 5 Attract · 10/30 grandes.<br>
+          <strong style="color:var(--text)">Captura:</strong> exausta/calma/disposta → Briefcase. Caminhos: satisfazer · confundir · remover.<br>
+          <strong style="color:var(--text)">Resultado:</strong> Captured +3 · Neutralized 0 · Escaped -3.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">✅ Checklist de preparação da missão</h3>
+  <div class="card">
+    <ul class="check-list">
+      <li>Defini o <strong>Focus</strong> da Anomalia (sentimento + assunto)</li>
+      <li>Defini o <strong>Domain</strong> e como ele reflete o Focus</li>
+      <li>Escolhi 1–2 <strong>Elements</strong> e os tipos de Minor Anomaly favoritos</li>
+      <li>Preparei os <strong>leads</strong> da Investigation (o rastro até o Domain)</li>
+      <li>Listei as <strong>Loose Ends</strong> que a Anomalia já deixou no mundo</li>
+      <li>Anotei 2–3 <strong>Chaos Effects</strong> sob medida para esta Anomalia</li>
+      <li>Preparei cenas de <strong>Morning Meeting</strong> tocando Reality Triggers</li>
+      <li>Confirmei quem interpreta os <strong>Relationships</strong> de cada Agente</li>
+    </ul>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">🛟 Content Control (antes de começar a campanha)</h3>
+  <div class="card">
+    <p style="font-size:13px;margin-bottom:0.75rem">Discuta com o grupo quais tópicos precisam de cuidado ou devem ser removidos. Exemplos listados no livro:</p>
+    <div class="tag-row">
+      <span class="tagchip">Transformações corporais</span>
+      <span class="tagchip">Sangue / gore</span>
+      <span class="tagchip">Dano a animais/crianças</span>
+      <span class="tagchip">Controle mental</span>
+      <span class="tagchip">Invasão de privacidade</span>
+      <span class="tagchip">Perda de identidade</span>
+      <span class="tagchip">Aprisionamento</span>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--head);font-size:17px;margin:1.5rem 0 1rem;">❓ Dúvidas comuns do Diretor</h3>
+
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Posso forçar um Agente a rolar? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Não. Rolar é sempre iniciativa do jogador (Ask The Agency ou Anomaly Ability). Você pode sugerir que algo exige uma dessas ferramentas, mas não obriga. Se o Agente tentar como pessoa comum e for arriscado, simplesmente falha — sem dados.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Quando devo gastar Chaos? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Segure durante a Investigation para criar tensão crescente; libere no Encounter. Use 1–2 Chaos para complicações, 3–5 para viradas dramáticas. Lembre que ao bater 4/8/12/16 no Pool, Minor Anomalies se manifestam automaticamente — isso pode "gastar" o clímax por você.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Como decido qual Quality se aplica numa rolagem? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Você tem a palavra final. Ouça a Causality Chain que o jogador constrói: se ele montou uma situação de Empathy, provavelmente rola Empathy. Seja consistente — os jogadores planejam em cima da sua lógica.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">O que faço com Minor Anomalies que sobraram? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Se não forem contidas, crescem. Anote-as: uma Minor Anomaly ignorada pode virar a Anomalia central de uma missão futura, ou ressurgir como Loose End/Chaos. É um excelente gerador de continuidade de campanha.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">Como narro perigo físico sem combate? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Descreva a ameaça e atribua Harm ("o teto desaba: 2 Harm"). Sem iniciativa nem turnos — a cena flui como roleplay. O Agente responde com Ask The Agency, um poder, ou absorvendo com QAs da Life Insurance. Brigas mundanas se resolvem narrativamente, no que faz sentido.</p></div>
+  </div>
+  <div class="accord" onclick="toggleAccord(this)">
+    <div class="accord-head">E o conflito entre Agentes? <span class="accord-arr">▼</span></div>
+    <div class="accord-body"><p>Existe um sistema próprio de Conflict Resolution para quando jogadores entram em conflito direto. É um caso especial de rolagem — sem Chaos e sem Triscendência. Deixe os jogadores conduzirem; você arbitra o resultado narrativo.</p></div>
+  </div>
+
+  <div class="card mt2" style="border-color:var(--accent2)">
+    <h3>🔁 O loop do Diretor em 5 passos</h3>
+    <div class="steps mt1">
+      <div class="step"><div class="step-num">①</div><div class="step-body"><h4>Descreva o mundo</h4><p>Dê informação, nunca peça rolagem de skill.</p></div></div>
+      <div class="step"><div class="step-num">②</div><div class="step-body"><h4>Deixe os Agentes agirem</h4><p>Mundano funciona ou falha; poderes geram rolagem.</p></div></div>
+      <div class="step"><div class="step-num">③</div><div class="step-body"><h4>Colha o Chaos das falhas</h4><p>Atualize o Pool; cheque limiares de manifestação.</p></div></div>
+      <div class="step"><div class="step-num">④</div><div class="step-body"><h4>Gaste Chaos como a Anomalia</h4><p>Ative Chaos Effects para pressionar.</p></div></div>
+      <div class="step"><div class="step-num">⑤</div><div class="step-body"><h4>Narre consequências</h4><p>Loose Ends, reação da Anomalia — e recomece.</p></div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+function go(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(sec).classList.add('active');
+  const navLink = document.querySelector(`nav a[data-sec="${sec}"]`);
+  if (navLink) navLink.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    go(a.dataset.sec);
+  });
+});
+
+function toggleAccord(el) {
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
